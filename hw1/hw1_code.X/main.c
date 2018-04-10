@@ -54,8 +54,9 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-    PORTAbits.RA4 = 1;
-    LATAbits.LATA4 = 0;
+    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
+    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
+    TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
     __builtin_enable_interrupts();
 
     while(1) {
