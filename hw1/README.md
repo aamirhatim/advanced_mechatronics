@@ -1,8 +1,4 @@
-# ME 433: Advanced Mechatronics
-#### Aamir Husain
-#### Spring 2018
-
-## HW 1
+# Homework 1
 In HW 1, the first circuit for the PIC was built, incorporating a voltage regulator, two LEDs (one to indicate power and another for use in a program), a reset button, and a USER button for use in a program.
 ![image](hw1/img/circuit_diagram.png)
 ![image](hw1/img/circuit_board.jpg)
