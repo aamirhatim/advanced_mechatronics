@@ -30,7 +30,7 @@
 #pragma config UPLLEN = ON // USB clock on
 
 // DEVCFG3
-#pragma config USERID = 101100001110111 // 16bit userid, 22647 in binary
+#pragma config USERID = 0x5877 // 16bit userid
 #pragma config PMDL1WAY = OFF // allow multiple reconfigurations
 #pragma config IOL1WAY = OFF // allow multiple reconfigurations
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
@@ -54,7 +54,8 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-
+    PORTAbits.RA4 = 1;
+    LATAbits.LATA4 = 0;
     __builtin_enable_interrupts();
 
     while(1) {
