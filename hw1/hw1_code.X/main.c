@@ -65,6 +65,7 @@ int main() {
         while (PORTBbits.RB4 == 0) {
             LATAbits.LATA4 = 0;                 // Turn off LED while button is pushed
         }
+        
         _CP0_SET_COUNT(0);                      // Set core timer to 0
         LATAbits.LATA4 = 1;                     // Turn on LED
         while (_CP0_GET_COUNT() <= 12000) {     // (48M/2)*.0005sec = 12000
