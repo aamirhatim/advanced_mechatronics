@@ -3,5 +3,6 @@
 /hw1/hw1_code.X/dist/default/
 *.mp4
 board.s#*
+board.b#*
 me433.l#*
 *.epf
