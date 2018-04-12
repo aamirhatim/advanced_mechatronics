@@ -2,3 +2,5 @@
 /hw1/hw1_code.X/build/default/
 /hw1/hw1_code.X/dist/default/
 *.mp4
+board.s#*
+me433.l#*
