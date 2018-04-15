@@ -6,3 +6,6 @@ board.s#*
 board.b#*
 me433.l#*
 *.epf
+*.gbrjob
+*.cam
+*.scr
