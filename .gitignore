@@ -9,3 +9,6 @@ me433.l#*
 *.gbrjob
 *.cam
 *.scr
+/hw4/hw4_code.X/nbproject/private/
+/hw4/hw4_code.X/build/default/
+/hw4/hw4_code.X/dist/default/
