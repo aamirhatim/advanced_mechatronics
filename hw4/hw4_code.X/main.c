@@ -58,9 +58,10 @@ int main() {
     LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
     TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
     
-    SDI1Rbits.SDI1R = 0b0000;           // Set RPA1 to SDI1 (pin 3)
-    RPB8Rbits.RPB8R = 0b0011;           // Set RPB8 to SDO1 (pin 17)
-    SS1Rbits.SS1R = 0b0100;             // Set RPB7 to SS1 (pin 16)
+    // Initialize pins for the DAC (SPI interface)
+    SDI1Rbits.SDI1R = 0b0100;           // Set RPB8 to SDI1 (pin 17 -> pin 14 on DAC)
+    RPB8Rbits.RPA1R = 0b0011;           // Set RPA1 to SDO1 (pin 3 -> pin 5 on DAC)
+    SS1Rbits.SS1R = 0b0000;             // Set RPA0 to SS1 (pin 2 -> pin 3 on DAC)
     __builtin_enable_interrupts();
 
     while(1) {
