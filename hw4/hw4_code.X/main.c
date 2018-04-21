@@ -67,24 +67,32 @@ int main() {
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
-        while (PORTBbits.RB4 == 0) {
-            LATAbits.LATA4 = 0;                 // Turn off LED while button is pushed
-        }
+//        while (PORTBbits.RB4 == 0) {
+//            LATAbits.LATA4 = 0;                 // Turn off LED while button is pushed
+//        }
         
         _CP0_SET_COUNT(0);                      // Set core timer to 0
+        
         LATAbits.LATA4 = 1;                     // Turn on LED
+        CS = 0;
+        SPI1_IO(0b01111111);
+        SPI1_IO(0b11110000);
+        CS = 1;
         while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
             ;                                   // Do nothing
         }
         
         _CP0_SET_COUNT(0);                      // Set core timer to 0
+        
         LATAbits.LATA4 = 0;                     // Turn off LED
+        CS = 0;
+        SPI1_IO(0b01111111);
+        SPI1_IO(0b10000000);
+        CS = 1;
         while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
             ;                                   // Do nothing
         }
         
-        SPI1_IO(0b11111111);
-        SPI1_IO(0b11110000);
         
     
     }

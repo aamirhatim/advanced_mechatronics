@@ -1,6 +1,5 @@
-#include<xc.h>                      // processor SFR definitions
-
-#define CS LATAbits.LATA0           // Chip select pin
+#include <xc.h>                      // processor SFR definitions
+#include "spi.h"
 
 // Initialize pins for the DAC (SPI interface)
 void init_SPI() {
