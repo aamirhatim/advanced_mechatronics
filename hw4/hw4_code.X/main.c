@@ -38,7 +38,6 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
-
 int main() {
 
     __builtin_disable_interrupts();
@@ -54,40 +53,22 @@ int main() {
 
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
-
-    // do your TRIS and LAT commands here
-    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
-    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
-    TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
     
     // Initialize pins for the DAC (SPI interface)
     init_SPI();
     __builtin_enable_interrupts();
-
-    while(1) {
-	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
-	// remember the core timer runs at half the sysclk
-//        while (PORTBbits.RB4 == 0) {
-//            LATAbits.LATA4 = 0;                 // Turn off LED while button is pushed
-//        }
-        
-        _CP0_SET_COUNT(0);                      // Set core timer to 0
-        
-        LATAbits.LATA4 = 1;                     // Turn on LED
-        SPI_write(0b11111111);
-        while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
-            ;                                   // Do nothing
-        }
-        
-        _CP0_SET_COUNT(0);                      // Set core timer to 0
-        
-        LATAbits.LATA4 = 0;                     // Turn off LED
-        SPI_write(0b11110000);
-        while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
-            ;                                   // Do nothing
-        }
-        
-        
     
+    float delta = 0.0;
+    while(1) {
+        _CP0_SET_COUNT(0);
+                
+        float valA = 512.0 + 511.0*sin(delta*2*3.14*10);
+        int vA = valA;
+        delta = delta + .001;
+        SPI_write(CONFIGA, valA);
+        
+        while (_CP0_GET_COUNT() < 24000) {;}   // (48M/2)*.001sec
     }
+    
+    return 0;
 }

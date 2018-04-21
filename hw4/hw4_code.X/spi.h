@@ -2,8 +2,10 @@
 #define _SPI_H
 
 #define CS LATAbits.LATA0           // Chip select pin
+#define CONFIGA 0b01110000          // Config bits for DACa
+#define CONFIGB 0b11110000          // Config bits for DACb
 
 void init_SPI();
-char SPI1_IO(char);
+void SPI_write(char, short int);
 
 #endif

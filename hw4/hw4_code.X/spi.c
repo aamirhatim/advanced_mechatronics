@@ -1,8 +1,12 @@
 #include <xc.h>                      // processor SFR definitions
 #include "spi.h"
 
-#define CONFIGA 0b01110000          // Config bits for DACa
-#define CONFIGB 0b11110000          // Config bits for DACb
+// Read/Write over SPI
+char SPI1_IO(char cmd) {
+    SPI1BUF = cmd;                  // Add cmd to buffer
+    while(!SPI1STATbits.SPIRBF) {;} // Wait to receive byte
+    return SPI1BUF;                 // Return buffer
+}
 
 // Initialize pins for the DAC (SPI interface)
 void init_SPI() {
@@ -15,24 +19,22 @@ CS = 1;
 
 SPI1CON = 0;                        // Turn off SPI module and reset
 SPI1BUF;                            // Clear Rx buffer by reading from it
-SPI1BRG = 0x3;                      // Set baud rate to 10MHz (SPI1BRG = (80M/(2*desired))-1)
+SPI1BRG = 0x1;                      // Set baud rate to 10MHz (SPI1BRG = (80M/(2*desired))-1)
 SPI1STATbits.SPIROV = 0;            // Clear overflow bit
 SPI1CONbits.CKE = 1;                // Data changes when clock goes from high to low
 SPI1CONbits.MSTEN = 1;              // Master operation
 SPI1CONbits.ON = 1;                 // Enable SPI1
-}
 
-// Read/Write over SPI
-char SPI1_IO(char cmd) {
-    SPI1BUF = cmd;                  // Add cmd to buffer
-    while(!SPI1STATbits.SPIRBF) {;} // Wait to receive byte
-    return SPI1BUF;                 // Return buffer
+CS = 0;
+SPI1_IO(0x01);
+SPI1_IO(0x41);
+CS = 1;
 }
 
 // Create data sequence to send to DAC
 void SPI_write(char config_bits, short int data) {
     char first = data >> 6;         // Get first four bits of input
-    char bit1 = CONFIGA | first;
+    char bit1 = config_bits | first;
     char bit2 = data << 2;        // Get remaining 6 bits of input
     
     CS = 0;
