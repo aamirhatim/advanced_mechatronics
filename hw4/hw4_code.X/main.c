@@ -1,6 +1,7 @@
-#include<xc.h>           // processor SFR definitions
-#include<sys/attribs.h>  // __ISR macro
-#include "spi.h"        // Include SPI library
+#include <xc.h>             // processor SFR definitions
+#include <sys/attribs.h>    // __ISR macro
+#include <math.h>           // Import math library
+#include "spi.h"            // Include SPI library
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -81,5 +82,10 @@ int main() {
         while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
             ;                                   // Do nothing
         }
+        
+        SPI1_IO(0b11111111);
+        SPI1_IO(0b11110000);
+        
+    
     }
 }
