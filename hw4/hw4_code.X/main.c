@@ -59,13 +59,33 @@ int main() {
     __builtin_enable_interrupts();
     
     float delta = 0.0;
+    int tri_count = 0;
+    int peak = 512;
+    
+    float valA, valB;
+    int s = 1;
     while(1) {
         _CP0_SET_COUNT(0);
                 
-        float valA = 512.0 + 511.0*sin(delta*2*3.14*10);
-        int vA = valA;
+        valA = 512.0 + 511.0*sin(delta*2*3.14*10);
         delta = delta + .001;
         SPI_write(CONFIGA, valA);
+        
+        valB = s*10.23*tri_count;
+        tri_count++;
+        if (tri_count <= 100) {
+            s = 1;
+        }
+        else if (tri_count <= 200) {
+            s = -1;
+        }
+        else {
+            tri_count = 0;
+        }
+        SPI_write(CONFIGB, valB);
+        
+        
+        
         
         while (_CP0_GET_COUNT() < 24000) {;}   // (48M/2)*.001sec
     }
