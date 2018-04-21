@@ -1,5 +1,6 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
+#include "spi.h"        // Include SPI library
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -59,9 +60,7 @@ int main() {
     TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
     
     // Initialize pins for the DAC (SPI interface)
-    SDI1Rbits.SDI1R = 0b0100;           // Set RPB8 to SDI1 (pin 17 -> pin 14 on DAC)
-    RPB8Rbits.RPA1R = 0b0011;           // Set RPA1 to SDO1 (pin 3 -> pin 5 on DAC)
-    SS1Rbits.SS1R = 0b0000;             // Set RPA0 to SS1 (pin 2 -> pin 3 on DAC)
+    init_SPI();
     __builtin_enable_interrupts();
 
     while(1) {
@@ -73,13 +72,13 @@ int main() {
         
         _CP0_SET_COUNT(0);                      // Set core timer to 0
         LATAbits.LATA4 = 1;                     // Turn on LED
-        while (_CP0_GET_COUNT() <= 12000) {     // (48M/2)*.0005sec = 12000
+        while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
             ;                                   // Do nothing
         }
         
         _CP0_SET_COUNT(0);                      // Set core timer to 0
         LATAbits.LATA4 = 0;                     // Turn off LED
-        while (_CP0_GET_COUNT() <= 12000) {     // (48M/2)*.0005sec = 12000
+        while (_CP0_GET_COUNT() <= 6000000) {   // (48M/2)*.25sec
             ;                                   // Do nothing
         }
     }
