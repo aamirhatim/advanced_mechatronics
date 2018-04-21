@@ -1,6 +1,9 @@
 #include <xc.h>                      // processor SFR definitions
 #include "spi.h"
 
+#define CONFIGA 0b01110000          // Config bits for DACa
+#define CONFIGB 0b11110000          // Config bits for DACb
+
 // Initialize pins for the DAC (SPI interface)
 void init_SPI() {
 SDI1Rbits.SDI1R = 0b0100;           // Set RPB8 to SDI1 (not connected to DAC)
@@ -24,4 +27,16 @@ char SPI1_IO(char cmd) {
     SPI1BUF = cmd;                  // Add cmd to buffer
     while(!SPI1STATbits.SPIRBF) {;} // Wait to receive byte
     return SPI1BUF;                 // Return buffer
+}
+
+// Create data sequence to send to DAC
+void SPI_write(char config_bits, short int data) {
+    char first = data >> 6;         // Get first four bits of input
+    char bit1 = CONFIGA | first;
+    char bit2 = data << 2;        // Get remaining 6 bits of input
+    
+    CS = 0;
+    SPI1_IO(bit1);
+    SPI1_IO(bit2);
+    CS = 1;
 }
