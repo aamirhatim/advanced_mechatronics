@@ -54,6 +54,9 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
     
+    // Initialize chip expander
+    initExpander();
+    
     __builtin_enable_interrupts();
     
     while(1) {
