@@ -58,12 +58,9 @@ int main() {
     init_SPI();
     __builtin_enable_interrupts();
     
-    float delta = 0.0;
-    int tri_count = 0;
-    int peak = 512;
+    float valA, valB, delta = 0.0;
+    int tri_count = 0, s = 1;
     
-    float valA, valB;
-    int s = 1;
     while(1) {
         _CP0_SET_COUNT(0);
                 
@@ -82,10 +79,7 @@ int main() {
         else {
             tri_count = 0;
         }
-        SPI_write(CONFIGB, valB);
-        
-        
-        
+        SPI_write(CONFIGB, valB);       
         
         while (_CP0_GET_COUNT() < 24000) {;}   // (48M/2)*.001sec
     }
