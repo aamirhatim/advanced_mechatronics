@@ -32,10 +32,10 @@ CS = 1;
 }
 
 // Create data sequence to send to DAC
-void SPI_write(char config_bits, short int data) {
-    char first = data >> 6;         // Get first four bits of input
-    char bit1 = config_bits | first;
-    char bit2 = data << 2;        // Get remaining 6 bits of input
+void DAC_write(char config_bits, short int data) {
+    char first = data >> 6;             // Get first four bits of input
+    char bit1 = config_bits | first;    // Create first bit to send to DAC
+    char bit2 = data << 2;              // Get remaining 6 bits of input
     
     CS = 0;
     SPI1_IO(bit1);

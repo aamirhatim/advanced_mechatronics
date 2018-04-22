@@ -6,6 +6,6 @@
 #define CONFIGB 0b11110000          // Config bits for DACb
 
 void init_SPI();
-void SPI_write(char, short int);
+void DAC_write(char, short int);
 
 #endif

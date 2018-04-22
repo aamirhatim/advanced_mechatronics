@@ -54,34 +54,34 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
     
-    // Initialize pins for the DAC (SPI interface)
-    init_SPI();
+    init_SPI();                                         // Initialize pins for the DAC (SPI interface)
     __builtin_enable_interrupts();
     
     float valA, valB, delta = 0.0;
-    int tri_count = 0, s = 1;
+    int tri_count = 0, s = 1, hz = 10;
+    float m = 10.23;                                    // Triangle wave slope = 1023/(1000/(2*5Hz)))
     
     while(1) {
         _CP0_SET_COUNT(0);
                 
-        valA = 512.0 + 511.0*sin(delta*2*3.14*10);
-        delta = delta + .001;
-        SPI_write(CONFIGA, valA);
+        valA = 512.0 + 511.0*sin(delta*2*3.14*hz);      // Function for 10Hz sin wave
+        delta = delta + .001;                           // Increment time step
+        DAC_write(CONFIGA, valA);                       // Send voltage to DACa
         
-        valB = s*10.23*tri_count;
+        valB = s*m*tri_count;                           // Function for 5Hz triangle wave
         tri_count++;
-        if (tri_count <= 100) {
+        if (tri_count <= 100) {                         // Positive slope for half the function
             s = 1;
         }
-        else if (tri_count <= 200) {
+        else if (tri_count <= 200) {                    // Negative slope for the other half
             s = -1;
         }
-        else {
+        else {                                          // Reset counter after one period has passed
             tri_count = 0;
         }
-        SPI_write(CONFIGB, valB);       
+        DAC_write(CONFIGB, valB);                       // Send voltage to DACb
         
-        while (_CP0_GET_COUNT() < 24000) {;}   // (48M/2)*.001sec
+        while (_CP0_GET_COUNT() < 24000) {;}            // Wait until 1ms has passed ((48M/2)*.001sec)
     }
     
     return 0;
