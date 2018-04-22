@@ -315,7 +315,7 @@
 <label x="-33.02" y="0" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="B8/SDI1" class="0">
+<net name="A1/SDO1" class="0">
 <segment>
 <pinref part="DAC" gate="G$1" pin="5.SDI"/>
 <wire x1="-17.78" y1="-5.08" x2="-33.02" y2="-5.08" width="0.1524" layer="91"/>
