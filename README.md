@@ -3,3 +3,9 @@
 #### Spring 2018
 
 This repo contains all mini-projects completed in ME 433: Advanced Mechatronics at Northwestern University.
+
+### [HW 1](hw1): PIC32 Setup
+### [HW 2](hw2): Schematic Design
+### [HW 3](hw3): PCB Design
+### [HW 4](hw4): SPI Communication with a DAC
+### [HW 5](hw5): I2C Communication with a Pin Expander
