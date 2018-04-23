@@ -4,7 +4,7 @@
 #define ADDRESS 0b0100000                       // Expander address (0b 0 1 0 0 A2 A1 A0)
 
 void i2c_master_setup(void) {
-  I2C2BRG = some number for 100kHz;             // I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2
+  I2C2BRG = 0x19;                               // I2CBRG = [1/(2*400kHz) - 104ns]*24M - 2
                                                 // look up PGD for your PIC32
   I2C2CONbits.ON = 1;                           // turn on the I2C2 module
 }
