@@ -46,7 +46,7 @@ void i2c_master_stop(void) {                    // send a STOP:
   while(I2C2CONbits.PEN) { ; }                  // wait for STOP to complete
 }
 
-void setExpander(unsigned char reg, unsigned char val) {
+void writeExpander(unsigned char reg, unsigned char val) {
     i2c_master_start();                         // make the start bit
     i2c_master_send(ADDRESS<1|0);               // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(reg);                       // the register to write to
@@ -54,7 +54,7 @@ void setExpander(unsigned char reg, unsigned char val) {
     i2c_master_stop();                          // make the stop bit
 }
 
-char getExpander(unsigned char reg) {
+char readExpander(unsigned char reg) {
     i2c_master_start();                         // make the start bit
     i2c_master_send(ADDRESS<1|0);               // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(reg);                       // the register to read from
@@ -71,4 +71,6 @@ void initExpander() {
     ANSELBbits.ANSB3 = 0;                       // Turn off analog for B3
     i2c_master_setup();                         // Turn on I2C module
     
+    writeExpander(0x0, 0b11110000);             // Set pins 0-3 as input, 4-7 as output
+    writeExpander(0xA, 0b00000001);             // Set pin 0 to high
 }
