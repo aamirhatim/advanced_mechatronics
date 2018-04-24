@@ -54,6 +54,10 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
     
+    // Enable RA4 as LED output pin
+    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
+    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
+    
     // Initialize chip expander
     initExpander();
     
