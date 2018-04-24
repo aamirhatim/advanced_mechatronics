@@ -40,8 +40,6 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
-void toggle();
-
 int main() {
 
     __builtin_disable_interrupts();
@@ -70,7 +68,7 @@ int main() {
     while(1) {
         _CP0_SET_COUNT(0);
         
-        toggle();                               // Toggle LED on the PIC
+        LED = !LED;                               // Toggle LED on the PIC
         if (readExpander(0x09) >> 7 == 0) {     // Read button value of expander
             writeExpander(0x0A, 1);             // Set expander LED high if button is low
         }
@@ -82,13 +80,4 @@ int main() {
     }
     
     return 0;
-}
-
-void toggle() {
-    if (LED == 0) {
-        LED = 1;
-    }
-    else {
-        LED = 0;
-    }
 }
