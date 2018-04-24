@@ -1,7 +1,7 @@
 #include <xc.h>             // processor SFR definitions
 #include <stdio.h>          // Use sprintf()
 #include <sys/attribs.h>    // __ISR macro
-#include <math.h>           // Import math library
+#include "lcd.h"            // Import LCD library
 
 #define LED LATAbits.LATA4
 
@@ -60,6 +60,8 @@ int main() {
     TRISAbits.TRISA4 = 0;                       // Make RA4 an output pin
     LED = 1;                                    // Set RA4 to high (turn on LED)
     
+    // Initialize LCD
+    LCD_init();
     
     __builtin_enable_interrupts();
     
