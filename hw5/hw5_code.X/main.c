@@ -3,6 +3,8 @@
 #include <math.h>           // Import math library
 #include "expander.h"       // Import expander chip library
 
+#define LED LATAbits.LATA4
+
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
 #pragma config JTAGEN = OFF // no jtag
@@ -38,6 +40,8 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
+void toggle();
+
 int main() {
 
     __builtin_disable_interrupts();
@@ -56,7 +60,7 @@ int main() {
     
     // Enable RA4 as LED output pin
     TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
-    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
+    LED = 1;                            // Set RA4 to high (turn on LED)
     
     // Initialize chip expander
     initExpander();
@@ -64,8 +68,23 @@ int main() {
     __builtin_enable_interrupts();
     
     while(1) {
-       
+        _CP0_SET_COUNT(0);
+        LED = 0;
+        while (_CP0_GET_COUNT() <= 6000000) {;}   // (48M/2)*.25sec = 6M
+        LED = 1;
+        while (_CP0_GET_COUNT() <= 6000000) {;}   // (48M/2)*.25sec = 6M
+        
+        
     }
     
     return 0;
+}
+
+void toggle() {
+    if (LED == 0) {
+        LED = 1;
+    }
+    else {
+        LED = 0;
+    }
 }
