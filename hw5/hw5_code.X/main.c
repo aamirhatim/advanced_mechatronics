@@ -69,9 +69,9 @@ int main() {
     
     while(1) {
         _CP0_SET_COUNT(0);
-        LED = 0;
-        while (_CP0_GET_COUNT() <= 6000000) {;}   // (48M/2)*.25sec = 6M
-        LED = 1;
+        toggle();
+        writeExpander(0x0A, LED);
+        
         while (_CP0_GET_COUNT() <= 6000000) {;}   // (48M/2)*.25sec = 6M
         
         
