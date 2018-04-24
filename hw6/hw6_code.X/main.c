@@ -1,9 +1,11 @@
 #include <xc.h>             // processor SFR definitions
 #include <stdio.h>          // Use sprintf()
 #include <sys/attribs.h>    // __ISR macro
-#include "lcd.h"            // Import LCD library
+#include "ST7735.h"         // Import LCD library
 
 #define LED LATAbits.LATA4
+#define HEIGHT 160
+#define WIDTH 128
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -65,8 +67,23 @@ int main() {
     
     __builtin_enable_interrupts();
     
+    char msg[WIDTH-1];
+    LCD_clearScreen(0x801F);
+    
+    int i = 0;
     while(1) {
+        _CP0_SET_COUNT(0);
+        sprintf(msg, "GO CATS!! %d%%", i);
+        LCD_drawString(28, 30, msg, WHITE, PURPLE);
         
+        if (i == 100) {
+            i = 0;
+        }
+        else {
+            i++;
+        }
+        
+        while (_CP0_GET_COUNT() < 3000000) {;}
     }
     
     return 0;

@@ -15,26 +15,26 @@
 // B8 is turned into SDI1 but is not used or connected to anything
 
 #include <xc.h>
-#include "lcd.h"
+#include "ST7735.h"
 
 void SPI1_init() {
-  SDI1Rbits.SDI1R = 0b0100; // B8 is SDI1
-  RPA1Rbits.RPA1R = 0b0011; // A1 is SDO1
-  TRISBbits.TRISB7 = 0; // SS is B7
-  LATBbits.LATB7 = 1; // SS starts high
+    SDI1Rbits.SDI1R = 0b0100; // B8 is SDI1
+    RPA1Rbits.RPA1R = 0b0011; // A1 is SDO1
+    TRISBbits.TRISB7 = 0; // SS is B7
+    LATBbits.LATB7 = 1; // SS starts high
 
-  // A0 / DAT pin
-  ANSELBbits.ANSB15 = 0;
-  TRISBbits.TRISB15 = 0;
-  LATBbits.LATB15 = 0;
+    // A0 / DAT pin
+    ANSELBbits.ANSB15 = 0;
+    TRISBbits.TRISB15 = 0;
+    LATBbits.LATB15 = 0;
 
-	SPI1CON = 0; // turn off the spi module and reset it
-  SPI1BUF; // clear the rx buffer by reading from it
-  SPI1BRG = 0; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
-  SPI1STATbits.SPIROV = 0; // clear the overflow bit
-  SPI1CONbits.CKE = 1; // data changes when clock goes from hi to lo (since CKP is 0)
-  SPI1CONbits.MSTEN = 1; // master operation
-  SPI1CONbits.ON = 1; // turn on spi1
+    SPI1CON = 0; // turn off the spi module and reset it
+    SPI1BUF; // clear the rx buffer by reading from it
+    SPI1BRG = 0; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
+    SPI1STATbits.SPIROV = 0; // clear the overflow bit
+    SPI1CONbits.CKE = 1; // data changes when clock goes from hi to lo (since CKP is 0)
+    SPI1CONbits.MSTEN = 1; // master operation
+    SPI1CONbits.ON = 1; // turn on spi1
 }
 
 unsigned char spi_io(unsigned char o) {
@@ -68,7 +68,7 @@ void LCD_data16(unsigned short dat) {
 }
 
 void LCD_init() {
-    SPI1_init();
+  SPI1_init();
   int time = 0;
   LCD_command(ST7735_SWRESET);//software reset
   time = _CP0_GET_COUNT();
@@ -246,4 +246,30 @@ void LCD_clearScreen(unsigned short color) {
 	for (i = 0;i < _GRAMSIZE; i++){
 		LCD_data16(color);
 	}
+}
+
+void LCD_drawChar(unsigned short x, unsigned short y, char msg, unsigned short c1, unsigned short c2) {
+    char row = msg - 0x20;          // Subtract hex 20 to get the right ASCII character from the table
+    int col = 0;
+    
+    for (col = 0; col < 5; col++) {
+        char pixels = ASCII[row][col];
+        int j = 0;
+        for (j = 0; j < 8; j++) {
+            if ((pixels >> j) & 1 == 1) {
+                LCD_drawPixel(x+col, y+j, c1);
+            }
+            else {
+                LCD_drawPixel(x+col, y+j, c2);
+            }
+        }
+    }
+}
+
+void LCD_drawString(unsigned short x, unsigned short y, char * msg, unsigned short c1, unsigned short c2) {
+    int i = 0;
+    while (msg[i]) {
+        LCD_drawChar(x+6*i, y, msg[i], c1, c2);
+        i++;
+    }
 }

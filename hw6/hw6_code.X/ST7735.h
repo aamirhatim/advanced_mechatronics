@@ -165,6 +165,7 @@ static const char ASCII[96][5] = {
 #define CYAN      0x07FF
 #define MAGENTA   0xF81F
 #define YELLOW    0xFFE0
+#define PURPLE    0x801F
 
 unsigned char spi_io(unsigned char); // send and rx a byte over spi
 void LCD_command(unsigned char); // send a command to the LCD
@@ -174,5 +175,7 @@ void LCD_init(void); // send the initializations to the LCD
 void LCD_drawPixel(unsigned short, unsigned short, unsigned short); // set the x,y pixel to a color
 void LCD_setAddr(unsigned short, unsigned short, unsigned short, unsigned short); // set the memory address you are writing to
 void LCD_clearScreen(unsigned short); // set the color of every pixel
+void LCD_drawChar(unsigned short, unsigned short, char, unsigned short, unsigned short);
+void LCD_drawString(unsigned short, unsigned short, char *, unsigned short, unsigned short);
 
 #endif
