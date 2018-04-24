@@ -9,3 +9,4 @@ This repo contains all mini-projects completed in ME 433: Advanced Mechatronics 
 ### [HW 3](hw3): PCB Design
 ### [HW 4](hw4): SPI Communication with a DAC
 ### [HW 5](hw5): I2C Communication with a Pin Expander
+### [HW 6](hw6): Controlling and LCD Display
