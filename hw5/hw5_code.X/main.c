@@ -68,7 +68,7 @@ int main() {
     while(1) {
         _CP0_SET_COUNT(0);
         
-        LED = !LED;                               // Toggle LED on the PIC
+        LED = !LED;                             // Toggle LED on the PIC
         if (readExpander(0x09) >> 7 == 0) {     // Read button value of expander
             writeExpander(0x0A, 1);             // Set expander LED high if button is low
         }
