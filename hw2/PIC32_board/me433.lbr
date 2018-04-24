@@ -10870,6 +10870,26 @@ diameter 5 mm, grid 2.54 mm</description>
 <text x="-10.16" y="22.86" size="1.27" layer="95">&gt;NAME</text>
 <text x="-10.16" y="20.32" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
+<symbol name="TFTLCD">
+<pin name="1.VCC" x="10.16" y="12.7" length="middle" rot="R180"/>
+<pin name="2.GND" x="10.16" y="7.62" length="middle" rot="R180"/>
+<pin name="3.CS" x="10.16" y="2.54" length="middle" rot="R180"/>
+<pin name="4.RESET" x="10.16" y="-2.54" length="middle" rot="R180"/>
+<pin name="5.A0" x="10.16" y="-7.62" length="middle" rot="R180"/>
+<pin name="6.SDA" x="10.16" y="-12.7" length="middle" rot="R180"/>
+<pin name="7.SCK" x="10.16" y="-17.78" length="middle" rot="R180"/>
+<pin name="8.LED" x="10.16" y="-22.86" length="middle" rot="R180"/>
+<wire x1="5.08" y1="-25.4" x2="5.08" y2="15.24" width="0.254" layer="94"/>
+<wire x1="5.08" y1="15.24" x2="-33.02" y2="15.24" width="0.254" layer="94"/>
+<wire x1="-33.02" y1="15.24" x2="-33.02" y2="-25.4" width="0.254" layer="94"/>
+<wire x1="-33.02" y1="-25.4" x2="5.08" y2="-25.4" width="0.254" layer="94"/>
+<wire x1="-30.48" y1="-22.86" x2="-30.48" y2="12.7" width="0.254" layer="94"/>
+<wire x1="-30.48" y1="12.7" x2="-7.62" y2="12.7" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="12.7" x2="-7.62" y2="-22.86" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-22.86" x2="-30.48" y2="-22.86" width="0.254" layer="94"/>
+<text x="-25.4" y="5.08" size="1.778" layer="95">&gt;NAME</text>
+<text x="-25.4" y="0" size="1.778" layer="96">&gt;VALUE</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="+3V3" prefix="+3V3">
@@ -13533,6 +13553,28 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <connect gate="G$1" pin="7.NC" pad="7"/>
 <connect gate="G$1" pin="8.INT" pad="8"/>
 <connect gate="G$1" pin="9.VSS" pad="9"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="TFTLCD">
+<gates>
+<gate name="G$1" symbol="TFTLCD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="1X08">
+<connects>
+<connect gate="G$1" pin="1.VCC" pad="1"/>
+<connect gate="G$1" pin="2.GND" pad="2"/>
+<connect gate="G$1" pin="3.CS" pad="3"/>
+<connect gate="G$1" pin="4.RESET" pad="4"/>
+<connect gate="G$1" pin="5.A0" pad="5"/>
+<connect gate="G$1" pin="6.SDA" pad="6"/>
+<connect gate="G$1" pin="7.SCK" pad="7"/>
+<connect gate="G$1" pin="8.LED" pad="8"/>
 </connects>
 <technologies>
 <technology name=""/>
