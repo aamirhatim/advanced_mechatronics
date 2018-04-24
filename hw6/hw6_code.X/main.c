@@ -72,11 +72,16 @@ int main() {
     LCD_drawBox(WHITE);
     
     int i = 0;
+    float time;
     while(1) {
         _CP0_SET_COUNT(0);
         sprintf(msg, "GO CATS!! %d%%   ", i);
         LCD_drawString(28, 30, msg, WHITE, PURPLE);
         LCD_drawProgress(i, WHITE, PURPLE);
+        
+        time = 48000000.0/_CP0_GET_COUNT();
+        sprintf(msg, "FPS: %1.2f", time);
+        LCD_drawString(41, 150, msg, WHITE, PURPLE);
         
         if (i == 100) {
             i = 0;
