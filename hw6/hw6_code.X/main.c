@@ -73,7 +73,7 @@ int main() {
     int i = 0;
     while(1) {
         _CP0_SET_COUNT(0);
-        sprintf(msg, "GO CATS!! %d%%", i);
+        sprintf(msg, "GO CATS!! %d%%   ", i);
         LCD_drawString(28, 30, msg, WHITE, PURPLE);
         
         if (i == 100) {
