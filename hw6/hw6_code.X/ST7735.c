@@ -276,14 +276,28 @@ void LCD_drawString(unsigned short x, unsigned short y, char * msg, unsigned sho
 
 void LCD_drawBox(unsigned short color) {
     int i;
-    for (i = 0; i < 102; i++) {
+    for (i = 0; i < 102; i++) {                 // Draw top and bottom
         LCD_drawPixel(13+i, 70, color);
         LCD_drawPixel(13+i, 76, color);
     }
     
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++) {                   // Draw sides
         LCD_drawPixel(13, 70+i, color);
         LCD_drawPixel(115, 70+i, color);
     }
+}
+
+void LCD_drawProgress(unsigned short prog, unsigned short c1, unsigned short c2) {
+    int i, j;
+    for (i = 0; i < prog; i++) {                // Draw progress amount
+        for (j = 0; j < 5; j++) {
+            LCD_drawPixel(14+i, 71+j, c1);
+        }
+    }
     
+    for (i = 0; i < 100-prog; i++) {            // Fill in the rest of the bar
+        for (j = 0; j < 5; j++) {
+            LCD_drawPixel(14+prog+i, 71+j, c2);
+        }
+    }
 }

@@ -76,6 +76,7 @@ int main() {
         _CP0_SET_COUNT(0);
         sprintf(msg, "GO CATS!! %d%%   ", i);
         LCD_drawString(28, 30, msg, WHITE, PURPLE);
+        LCD_drawProgress(i, WHITE, PURPLE);
         
         if (i == 100) {
             i = 0;

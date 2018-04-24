@@ -178,5 +178,6 @@ void LCD_clearScreen(unsigned short); // set the color of every pixel
 void LCD_drawChar(unsigned short, unsigned short, char, unsigned short, unsigned short);
 void LCD_drawString(unsigned short, unsigned short, char *, unsigned short, unsigned short);
 void LCD_drawBox(unsigned short);
+void LCD_drawProgress(unsigned short, unsigned short, unsigned short);
 
 #endif
