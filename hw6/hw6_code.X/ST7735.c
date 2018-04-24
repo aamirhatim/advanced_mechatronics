@@ -273,3 +273,17 @@ void LCD_drawString(unsigned short x, unsigned short y, char * msg, unsigned sho
         i++;
     }
 }
+
+void LCD_drawBox(unsigned short color) {
+    int i;
+    for (i = 0; i < 102; i++) {
+        LCD_drawPixel(13+i, 70, color);
+        LCD_drawPixel(13+i, 76, color);
+    }
+    
+    for (i = 0; i < 7; i++) {
+        LCD_drawPixel(13, 70+i, color);
+        LCD_drawPixel(115, 70+i, color);
+    }
+    
+}

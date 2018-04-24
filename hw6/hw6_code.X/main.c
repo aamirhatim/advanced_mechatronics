@@ -69,6 +69,7 @@ int main() {
     
     char msg[WIDTH-1];
     LCD_clearScreen(0x801F);
+    LCD_drawBox(WHITE);
     
     int i = 0;
     while(1) {
