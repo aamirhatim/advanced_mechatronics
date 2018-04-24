@@ -59,8 +59,8 @@ int main() {
     DDPCONbits.JTAGEN = 0;
     
     // Enable RA4 as LED output pin
-    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
-    LED = 1;                            // Set RA4 to high (turn on LED)
+    TRISAbits.TRISA4 = 0;                       // Make RA4 an output pin
+    LED = 1;                                    // Set RA4 to high (turn on LED)
     
     // Initialize chip expander
     initExpander();
@@ -69,12 +69,16 @@ int main() {
     
     while(1) {
         _CP0_SET_COUNT(0);
-        toggle();
-        writeExpander(0x0A, LED);
         
-        while (_CP0_GET_COUNT() <= 6000000) {;}   // (48M/2)*.25sec = 6M
+        toggle();                               // Toggle LED on the PIC
+        if (readExpander(0x09) >> 7 == 0) {     // Read button value of expander
+            writeExpander(0x0A, 1);             // Set expander LED high if button is low
+        }
+        else {
+            writeExpander(0x0A, 0);             // Else set expander LED low
+        }
         
-        
+        while (_CP0_GET_COUNT() <= 6000000) {;} // (48M/2)*.25sec = 6M
     }
     
     return 0;

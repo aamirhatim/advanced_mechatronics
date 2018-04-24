@@ -70,4 +70,5 @@ void initExpander() {
     
     writeExpander(0x00, 0b11110000);            // Set pins 0-3 as output, 4-7 as input
     writeExpander(0x0A, 0b00000000);            // Set output pins to low
+    writeExpander(0x06, 0b10000000);            // Enable internal pull-up resistor for pin 7
 }
