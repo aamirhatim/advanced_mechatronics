@@ -4,8 +4,6 @@
 #include "ST7735.h"         // Import LCD library
 
 #define LED LATAbits.LATA4
-#define HEIGHT 160
-#define WIDTH 128
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging

@@ -222,10 +222,23 @@ void LCD_init() {
     LCD_data(MADCTL_MX | MADCTL_MY | MADCTL_RGB);
 }
 
+int LCD_checkBounds(unsigned short x, unsigned short y) {
+    if (x >= WIDTH) {
+        return 0;
+    }
+    else if (y >= HEIGHT) {
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
 void LCD_drawPixel(unsigned short x, unsigned short y, unsigned short color) {
-  // check boundary
-  LCD_setAddr(x,y,x+1,y+1);
-  LCD_data16(color);
+    if (LCD_checkBounds(x, y) == 1) {               // Check bounds of pixel before printing
+        LCD_setAddr(x,y,x+1,y+1);
+        LCD_data16(color);
+    }
 }
 
 void LCD_setAddr(unsigned short x0, unsigned short y0, unsigned short x1, unsigned short y1) {

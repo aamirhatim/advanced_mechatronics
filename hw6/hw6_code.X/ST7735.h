@@ -167,6 +167,10 @@ static const char ASCII[96][5] = {
 #define YELLOW    0xFFE0
 #define PURPLE    0x801F
 
+// Dimensions
+#define HEIGHT 160
+#define WIDTH 128
+
 unsigned char spi_io(unsigned char); // send and rx a byte over spi
 void LCD_command(unsigned char); // send a command to the LCD
 void LCD_data(unsigned char); // send data to the LCD
