@@ -73,7 +73,7 @@ int main() {
         LCD_drawString(28, 30, msg, WHITE, PURPLE);
         LCD_drawProgress(i, WHITE, PURPLE);             // Draw progress bar
         
-        time = 48000000.0/_CP0_GET_COUNT();             // Get time for drawing
+        time = 24000000.0/_CP0_GET_COUNT();             // Get time for drawing
         sprintf(msg, "FPS: %1.2f", time);
         LCD_drawString(36, 150, msg, WHITE, PURPLE);    // Print FPS
         
@@ -84,7 +84,7 @@ int main() {
             i++;
         }
         
-        while (_CP0_GET_COUNT() < 3000000) {;}
+        while (_CP0_GET_COUNT() < 2400000) {;}          // Increment at 10Hz: (48M/2)*.1sec
     }
     
     return 0;
