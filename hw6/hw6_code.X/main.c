@@ -58,10 +58,6 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
     
-    // Enable RA4 as LED output pin
-    TRISAbits.TRISA4 = 0;                       // Make RA4 an output pin
-    LED = 1;                                    // Set RA4 to high (turn on LED)
-    
     // Initialize LCD
     LCD_init();
     
@@ -75,15 +71,15 @@ int main() {
     float time;
     while(1) {
         _CP0_SET_COUNT(0);
-        sprintf(msg, "GO CATS!! %d%%   ", i);
+        sprintf(msg, "GO CATS!! %d%%   ", i);           // Draw text string
         LCD_drawString(28, 30, msg, WHITE, PURPLE);
-        LCD_drawProgress(i, WHITE, PURPLE);
+        LCD_drawProgress(i, WHITE, PURPLE);             // Draw progress bar
         
-        time = 48000000.0/_CP0_GET_COUNT();
+        time = 48000000.0/_CP0_GET_COUNT();             // Get time for drawing
         sprintf(msg, "FPS: %1.2f", time);
-        LCD_drawString(41, 150, msg, WHITE, PURPLE);
+        LCD_drawString(36, 150, msg, WHITE, PURPLE);    // Print FPS
         
-        if (i == 100) {
+        if (i == 100) {                                 // Reset progress once it reaches 100
             i = 0;
         }
         else {
