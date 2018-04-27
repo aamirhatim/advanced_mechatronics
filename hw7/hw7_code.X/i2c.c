@@ -67,4 +67,8 @@ void IMU_init() {
     ANSELBbits.ANSB2 = 0;                       // Turn off analog for B2
     ANSELBbits.ANSB3 = 0;                       // Turn off analog for B3
     i2c_master_setup();                         // Turn on I2C module
+    
+    i2c_write(0x10, 0b10000010);                // CTRL1_XL, 1.66kHz sample rate, +/-2g, 100Hz filter
+    i2c_write(0x11, 0b10001000);                // CTRL2_G, 1.66kHz sample rate, 1000dps
+    
 }
