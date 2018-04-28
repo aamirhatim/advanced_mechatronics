@@ -61,6 +61,9 @@ int main() {
     TRISAbits.TRISA4 = 0;                       // Make RA4 an output pin
     LED = 1;                                    // Set RA4 to high (turn on LED)
     
+    // Initialize LCD
+    LCD_init();
+    
     // Initialize IMU
     IMU_init();
     
@@ -69,6 +72,9 @@ int main() {
     int i, len = 14;
     unsigned char data[len];
     unsigned short info[7];
+    char msg[WIDTH-1];
+    
+    LCD_clearScreen(RED);
     
     while(1) {
         _CP0_SET_COUNT(0);
@@ -77,6 +83,8 @@ int main() {
             info[i] = (data[i+1] << 8) | data[i];               // Shift the high byte left 8 units and OR it with the low byte
             i++;
         }
+        
+        
         
         
 //        unsigned char whoami = i2c_read(0x0F);
