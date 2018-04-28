@@ -1,7 +1,7 @@
 #include <xc.h>             // processor SFR definitions
 #include <sys/attribs.h>    // __ISR macro
 #include <math.h>           // Import math library
-#include "i2c.h"       // Import expander chip library
+#include "i2c.h"            // Import expander chip library
 
 #define LED LATAbits.LATA4
 
@@ -60,23 +60,28 @@ int main() {
     TRISAbits.TRISA4 = 0;                       // Make RA4 an output pin
     LED = 1;                                    // Set RA4 to high (turn on LED)
     
-    // Initialize chip expander
+    // Initialize IMU
     IMU_init();
     
     __builtin_enable_interrupts();
     
+    int len = 14;
+    unsigned char data[len]; 
+    
     while(1) {
         _CP0_SET_COUNT(0);
+        i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
+//        i2c_read(OUT_TEMP_L);
         
         unsigned char whoami = i2c_read(0x0F);
-        if (whoami == 0b01101001) {
+        if (whoami == 105) {
             LED = !LED;
         }
         else {
             LED = 0;
         }
 
-        while (_CP0_GET_COUNT() <= 6000000) {;} // (48M/2)*.25sec = 6M
+        while (_CP0_GET_COUNT() <= 6000000) {;}                 // (48M/2)*.25sec = 6M
     }
     
     return 0;

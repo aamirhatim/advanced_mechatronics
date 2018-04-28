@@ -1,8 +1,6 @@
 #include <xc.h>
 #include "i2c.h"
 
-#define ADDRESS 0b01101011                       // Expander address (0b 0 1 0 0 A2 A1 A0)
-
 void i2c_master_setup(void) {
     I2C2BRG = 0x35;                             // I2CBRG = [1/(2*400kHz) - 104ns]*48M - 2
     I2C2CONbits.ON = 1;                         // turn on the I2C2 module
@@ -70,5 +68,22 @@ void IMU_init() {
     
     i2c_write(0x10, 0b10000010);                // CTRL1_XL, 1.66kHz sample rate, +/-2g, 100Hz filter
     i2c_write(0x11, 0b10001000);                // CTRL2_G, 1.66kHz sample rate, 1000dps
-    
+    i2c_write(0x12, 0b00000100);                // Enable incremental multiple reads
+}
+
+void i2c_read_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length) {
+    int i;
+    char r;
+    i2c_master_start();                         // make the start bit
+    i2c_master_send((address << 1)|0);          // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(reg);                       // the register to read from
+    i2c_master_restart();                       // make the restart bit
+    i2c_master_send((address << 1)|1);          // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    for (i = 0; i < length-1; i++) {
+        data[i] = i2c_master_recv();            // save the value returned into data array
+        i2c_master_ack(0);                      // Send ack of 0 to keep reading
+    }
+    data[length-1] = i2c_master_recv();         // Read last value and store into data array
+    i2c_master_ack(1);                          // make the ack so the slave knows we got it
+    i2c_master_stop();                          // make the stop bit
 }
