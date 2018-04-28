@@ -2,6 +2,7 @@
 #include <sys/attribs.h>    // __ISR macro
 #include <math.h>           // Import math library
 #include "i2c.h"            // Import expander chip library
+#include "ST7735.h"         // Import LCD library
 
 #define LED LATAbits.LATA4
 
@@ -65,22 +66,28 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int len = 14;
-    unsigned char data[len]; 
+    int i, len = 14;
+    unsigned char data[len];
+    unsigned short info[7];
     
     while(1) {
         _CP0_SET_COUNT(0);
         i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
-//        i2c_read(OUT_TEMP_L);
+        for (i = 0; i < len; i++) {                         // Combine bytes in data array to get IMU info
+            info[i] = (data[i+1] << 8) | data[i];               // Shift the high byte left 8 units and OR it with the low byte
+            i++;
+        }
         
-        unsigned char whoami = i2c_read(0x0F);
-        if (whoami == 105) {
-            LED = !LED;
-        }
-        else {
-            LED = 0;
-        }
-
+        
+//        unsigned char whoami = i2c_read(0x0F);
+//        if (whoami == 105) {
+//            
+//        }
+//        else {
+//            LED = 0;
+//        }
+        
+        LED = !LED;
         while (_CP0_GET_COUNT() <= 6000000) {;}                 // (48M/2)*.25sec = 6M
     }
     
