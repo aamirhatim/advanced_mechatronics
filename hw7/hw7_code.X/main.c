@@ -73,15 +73,19 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int i, j, len = 14;
+    int i, p, j, len = 14;
     unsigned char data[len];
     signed short info[7];
     char msg[WIDTH-1];
     
     LCD_clearScreen(RED);
     for (i = 0; i < 100; i++) {
-        LCD_drawPixel(14+i, 80, BLACK);
-        LCD_drawPixel(64, 30+i, BLACK);
+        for (p = 0; p < 3; p++) {
+            LCD_drawPixel(14+i, 79+p, BLACK);
+            LCD_drawPixel(63+p, 30+i, BLACK);
+        }
+//        LCD_drawPixel(14+i, 80, BLACK);
+//        LCD_drawPixel(64, 30+i, BLACK);
     }
     
     while(1) {
@@ -125,7 +129,7 @@ void draw_xBar(int x) {
     for (i = 0; i < x*s; i++) {
             LCD_drawPixel(64+i*s, 80, WHITE);                   // Draw tilt line
         }
-        while (i <= 50) {
+        while (i < 49) {
             LCD_drawPixel(64+i*s, 80, BLACK);                   // Fill remainder of the bar with black
             i++;
         }
@@ -143,7 +147,7 @@ void draw_yBar(int y) {
     for (i = 0; i < y*s; i++) {
             LCD_drawPixel(64, 80-i*s, WHITE);
         }
-        while (i <= 50) {
+        while (i < 49) {
             LCD_drawPixel(64, 80-i*s, BLACK);
             i++;
         }
