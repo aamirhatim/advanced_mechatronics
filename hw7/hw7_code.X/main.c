@@ -69,32 +69,36 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int i = 0, len = 14;
+    int i = 0, j = 0, k = 0, len = 14;
     unsigned char data[len];
     signed short info[7];
     
     LCD_clearScreen(RED);
+    for (i = 0; i < 100; i++) {
+        LCD_drawPixel(14+i, 80, BLACK);
+        LCD_drawPixel(64, 30+i, BLACK);
+    }
     
     while(1) {
         _CP0_SET_COUNT(0);
         i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
-        while (i < len) {                             // Combine bytes in data array to get IMU info
-            signed short high = data[i+1] << 8;
-            signed short low = data[i];
-            info[i/2] = high | low;               // Shift the high byte left 8 units and OR it with the low byte
-            i=i+2;
+        while (j < len) {                             // Combine bytes in data array to get IMU info
+            signed short high = data[j+1] << 8;
+            signed short low = data[j];
+            info[j/2] = high | low;               // Shift the high byte left 8 units and OR it with the low byte
+            j=j+2;
         }
         
         char msg[WIDTH-1];
-        for (i = 0; i < 2; i++) {
-            sprintf(msg, "%d     ", info[4+i]);
-            LCD_drawString(28, 30+(i*15), msg, BLACK, RED);                // Print data to screen
-        }
-        
 //        sprintf(msg, "%d     ", info[4]);
 //        LCD_drawString(28, 30, msg, BLACK, RED);
 //        sprintf(msg, "%d     ", info[5]);
 //        LCD_drawString(28, 45, msg, BLACK, RED);
+        
+        for (k = 0; k < 2; k++) {
+            sprintf(msg, "%d     ", info[4+k]);
+            LCD_drawString(15, 5+(k*15), msg, BLACK, RED);                // Print data to screen
+        }
         
         LED = !LED;
         while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec = 6M
