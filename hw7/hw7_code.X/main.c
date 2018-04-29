@@ -103,20 +103,19 @@ int main() {
         LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to screen
         sprintf(msg, "Y: %d    ", ybar);
         LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to screen
+        draw_xBar(xbar);                                        // Draw x tilt line
+        draw_yBar(ybar);                                        // Draw y tilt line
+        LCD_drawPixel(64, 80, WHITE);                           // Draw center point
         
-        LCD_drawPixel(64, 80, WHITE);
-        draw_xBar(xbar);
-        draw_yBar(ybar);
-        
-        LED = !LED;
-        while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec = 6M
+        LED = !LED;                                             // Toggle LED for heartbeat
+        while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec => 10Hz cycles
     }
     return 0;
 }
 
 void draw_xBar(int x) {
     int i, s;
-    if (x < 0) {
+    if (x < 0) {                                                // Check the sign of the tilt to determine what direction to draw in
         s = -1;
     }
     else {
@@ -124,10 +123,10 @@ void draw_xBar(int x) {
     }
     
     for (i = 0; i < x*s; i++) {
-            LCD_drawPixel(64+i*s, 80, WHITE);
+            LCD_drawPixel(64+i*s, 80, WHITE);                   // Draw tilt line
         }
         while (i <= 50) {
-            LCD_drawPixel(64+i*s, 80, BLACK);
+            LCD_drawPixel(64+i*s, 80, BLACK);                   // Fill remainder of the bar with black
             i++;
         }
 }
