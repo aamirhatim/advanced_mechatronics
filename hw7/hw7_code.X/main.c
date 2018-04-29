@@ -69,9 +69,10 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int i = 0, j = 0, k = 0, len = 14;
+    int i, j, k, len = 14;
     unsigned char data[len];
     signed short info[7];
+    char msg[WIDTH-1];
     
     LCD_clearScreen(RED);
     for (i = 0; i < 100; i++) {
@@ -82,27 +83,20 @@ int main() {
     while(1) {
         _CP0_SET_COUNT(0);
         i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
-        while (j < len) {                             // Combine bytes in data array to get IMU info
+        j = 0;
+        while (j < len) {                                       // Combine bytes in data array to get IMU info
             signed short high = data[j+1] << 8;
             signed short low = data[j];
-            info[j/2] = high | low;               // Shift the high byte left 8 units and OR it with the low byte
+            info[j/2] = high|low;                               // Shift the high byte left 8 units and OR it with the low byte
             j=j+2;
         }
-        
-        char msg[WIDTH-1];
-//        sprintf(msg, "%d     ", info[4]);
-//        LCD_drawString(28, 30, msg, BLACK, RED);
-//        sprintf(msg, "%d     ", info[5]);
-//        LCD_drawString(28, 45, msg, BLACK, RED);
-        
-        for (k = 0; k < 2; k++) {
-            sprintf(msg, "%d     ", info[4+k]);
-            LCD_drawString(15, 5+(k*15), msg, BLACK, RED);                // Print data to screen
-        }
+        sprintf(msg, "X: %d    ", info[4]);
+        LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to screen
+        sprintf(msg, "Y: %d    ", info[5]);
+        LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to screen
         
         LED = !LED;
         while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec = 6M
     }
-    
     return 0;
 }
