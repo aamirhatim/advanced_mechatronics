@@ -1,6 +1,6 @@
 #include <xc.h>             // processor SFR definitions
 #include <sys/attribs.h>    // __ISR macro
-#include <math.h>           // Import math library
+#include <stdio.h>          // Inmport sprintf()
 #include "i2c.h"            // Import expander chip library
 #include "ST7735.h"         // Import LCD library
 
@@ -69,34 +69,35 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int i, len = 14;
+    int i = 0, len = 14;
     unsigned char data[len];
-    unsigned short info[7];
-    char msg[WIDTH-1];
+    signed short info[7];
     
     LCD_clearScreen(RED);
     
     while(1) {
         _CP0_SET_COUNT(0);
         i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
-        for (i = 0; i < len; i++) {                         // Combine bytes in data array to get IMU info
-            info[i] = (data[i+1] << 8) | data[i];               // Shift the high byte left 8 units and OR it with the low byte
-            i++;
+        while (i < len) {                             // Combine bytes in data array to get IMU info
+            signed short high = data[i+1] << 8;
+            signed short low = data[i];
+            info[i/2] = high | low;               // Shift the high byte left 8 units and OR it with the low byte
+            i=i+2;
         }
         
+        char msg[WIDTH-1];
+        for (i = 0; i < 2; i++) {
+            sprintf(msg, "%d     ", info[4+i]);
+            LCD_drawString(28, 30+(i*15), msg, BLACK, RED);                // Print data to screen
+        }
         
-        
-        
-//        unsigned char whoami = i2c_read(0x0F);
-//        if (whoami == 105) {
-//            
-//        }
-//        else {
-//            LED = 0;
-//        }
+//        sprintf(msg, "%d     ", info[4]);
+//        LCD_drawString(28, 30, msg, BLACK, RED);
+//        sprintf(msg, "%d     ", info[5]);
+//        LCD_drawString(28, 45, msg, BLACK, RED);
         
         LED = !LED;
-        while (_CP0_GET_COUNT() <= 6000000) {;}                 // (48M/2)*.25sec = 6M
+        while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec = 6M
     }
     
     return 0;

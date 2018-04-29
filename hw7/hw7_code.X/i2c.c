@@ -73,7 +73,6 @@ void IMU_init() {
 
 void i2c_read_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length) {
     int i;
-    char r;
     i2c_master_start();                         // make the start bit
     i2c_master_send((address << 1)|0);          // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(reg);                       // the register to read from
