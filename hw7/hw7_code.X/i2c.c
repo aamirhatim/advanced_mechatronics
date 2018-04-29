@@ -69,6 +69,7 @@ void IMU_init() {
     i2c_write(0x10, 0b10000010);                // CTRL1_XL, 1.66kHz sample rate, +/-2g, 100Hz filter
     i2c_write(0x11, 0b10001000);                // CTRL2_G, 1.66kHz sample rate, 1000dps
     i2c_write(0x12, 0b00000100);                // Enable incremental multiple reads
+    i2c_write(0x0B, 0b00100000);
 }
 
 void i2c_read_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length) {

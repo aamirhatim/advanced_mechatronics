@@ -5,6 +5,7 @@
 #include "ST7735.h"         // Import LCD library
 
 #define LED LATAbits.LATA4
+#define MAX_G 18000.0        // Upper limit for raw acceleration value
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -41,6 +42,9 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
+void draw_xBar(int);
+void draw_yBar(int);
+
 int main() {
 
     __builtin_disable_interrupts();
@@ -69,7 +73,7 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    int i, j, k, len = 14;
+    int i, j, len = 14;
     unsigned char data[len];
     signed short info[7];
     char msg[WIDTH-1];
@@ -90,13 +94,58 @@ int main() {
             info[j/2] = high|low;                               // Shift the high byte left 8 units and OR it with the low byte
             j=j+2;
         }
-        sprintf(msg, "X: %d    ", info[4]);
+        
+        float xscale = info[4]/MAX_G;
+        float yscale = info[5]/MAX_G;
+        int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
+        int ybar = 50*yscale;                                   // Scale for 50 pixel bar
+        sprintf(msg, "X: %d    ", xbar);
         LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to screen
-        sprintf(msg, "Y: %d    ", info[5]);
+        sprintf(msg, "Y: %d    ", ybar);
         LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to screen
+        
+        LCD_drawPixel(64, 80, WHITE);
+        draw_xBar(xbar);
+        draw_yBar(ybar);
         
         LED = !LED;
         while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec = 6M
     }
     return 0;
+}
+
+void draw_xBar(int x) {
+    int i, s;
+    if (x < 0) {
+        s = -1;
+    }
+    else {
+        s = 1;
+    }
+    
+    for (i = 0; i < x*s; i++) {
+            LCD_drawPixel(64+i*s, 80, WHITE);
+        }
+        while (i <= 50) {
+            LCD_drawPixel(64+i*s, 80, BLACK);
+            i++;
+        }
+}
+
+void draw_yBar(int y) {
+    int i, s;
+    if (y < 0) {
+        s = -1;
+    }
+    else {
+        s = 1;
+    }
+    
+    for (i = 0; i < y*s; i++) {
+            LCD_drawPixel(64, 80-i*s, WHITE);
+        }
+        while (i <= 50) {
+            LCD_drawPixel(64, 80-i*s, BLACK);
+            i++;
+        }
 }
