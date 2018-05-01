@@ -166,6 +166,19 @@
 <text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 </package>
+<package name="LSM6DS33">
+<pad name="1" x="-10.16" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="2" x="-7.62" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="3" x="-5.08" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="4" x="-2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="5" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="6" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="7" x="5.08" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="8" x="7.62" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<text x="-11.43" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
+<text x="-11.43" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+<pad name="9" x="10.16" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+</package>
 </packages>
 <symbols>
 <symbol name="TFTLCD">
@@ -198,6 +211,23 @@
 <wire x1="-1.905" y1="0" x2="1.905" y2="0" width="0.254" layer="94"/>
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
+</symbol>
+<symbol name="LSM6DS33">
+<pin name="1.VDD" x="-12.7" y="17.78" length="middle"/>
+<pin name="2.VIN" x="-12.7" y="12.7" length="middle"/>
+<pin name="3.GND" x="-12.7" y="7.62" length="middle"/>
+<pin name="4.SDA" x="-12.7" y="2.54" length="middle"/>
+<pin name="5.SCL" x="-12.7" y="-2.54" length="middle"/>
+<pin name="6.SDO" x="-12.7" y="-7.62" length="middle"/>
+<pin name="7.CS" x="-12.7" y="-12.7" length="middle"/>
+<pin name="8.INT2" x="-12.7" y="-17.78" length="middle"/>
+<pin name="9.INT1" x="-12.7" y="-22.86" length="middle"/>
+<wire x1="-7.62" y1="20.32" x2="-7.62" y2="-25.4" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-25.4" x2="5.08" y2="-25.4" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-25.4" x2="5.08" y2="20.32" width="0.254" layer="94"/>
+<wire x1="5.08" y1="20.32" x2="-7.62" y2="20.32" width="0.254" layer="94"/>
+<text x="-7.62" y="25.4" size="1.778" layer="95">&gt;NAME</text>
+<text x="-7.62" y="22.86" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -249,6 +279,29 @@
 </device>
 </devices>
 </deviceset>
+<deviceset name="LSM6DS33">
+<gates>
+<gate name="G$1" symbol="LSM6DS33" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="LSM6DS33">
+<connects>
+<connect gate="G$1" pin="1.VDD" pad="1"/>
+<connect gate="G$1" pin="2.VIN" pad="2"/>
+<connect gate="G$1" pin="3.GND" pad="3"/>
+<connect gate="G$1" pin="4.SDA" pad="4"/>
+<connect gate="G$1" pin="5.SCL" pad="5"/>
+<connect gate="G$1" pin="6.SDO" pad="6"/>
+<connect gate="G$1" pin="7.CS" pad="7"/>
+<connect gate="G$1" pin="8.INT2" pad="8"/>
+<connect gate="G$1" pin="9.INT1" pad="9"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -266,6 +319,9 @@
 <part name="GND1" library="me433" deviceset="GND" device=""/>
 <part name="+3V2" library="me433" deviceset="+3V3" device=""/>
 <part name="+3V3" library="me433" deviceset="+3V3" device=""/>
+<part name="IMU" library="me433" deviceset="LSM6DS33" device=""/>
+<part name="GND2" library="me433" deviceset="GND" device=""/>
+<part name="+3V4" library="me433" deviceset="+3V3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -332,6 +388,52 @@
 <pinref part="LCD" gate="G$1" pin="2.GND"/>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="27.94" y1="15.24" x2="43.18" y2="15.24" width="0.1524" layer="91"/>
+</segment>
+</net>
+</nets>
+</sheet>
+<sheet>
+<plain>
+</plain>
+<instances>
+<instance part="IMU" gate="G$1" x="0" y="0"/>
+<instance part="GND2" gate="1" x="-15.24" y="7.62"/>
+<instance part="+3V4" gate="G$1" x="-15.24" y="22.86"/>
+</instances>
+<busses>
+</busses>
+<nets>
+<net name="+3V3" class="0">
+<segment>
+<pinref part="IMU" gate="G$1" pin="2.VIN"/>
+<pinref part="+3V4" gate="G$1" pin="+3V3"/>
+<wire x1="-12.7" y1="12.7" x2="-15.24" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="12.7" x2="-15.24" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="IMU" gate="G$1" pin="1.VDD"/>
+<wire x1="-15.24" y1="17.78" x2="-15.24" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="17.78" x2="-15.24" y2="17.78" width="0.1524" layer="91"/>
+<junction x="-15.24" y="17.78"/>
+</segment>
+</net>
+<net name="GND" class="0">
+<segment>
+<pinref part="GND2" gate="1" pin="GND"/>
+<pinref part="IMU" gate="G$1" pin="3.GND"/>
+<wire x1="-15.24" y1="10.16" x2="-12.7" y2="7.62" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="SDA2/RB2" class="0">
+<segment>
+<pinref part="IMU" gate="G$1" pin="4.SDA"/>
+<wire x1="-12.7" y1="2.54" x2="-27.94" y2="2.54" width="0.1524" layer="91"/>
+<label x="-27.94" y="2.54" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="SCL2/RB3" class="0">
+<segment>
+<pinref part="IMU" gate="G$1" pin="5.SCL"/>
+<wire x1="-12.7" y1="-2.54" x2="-27.94" y2="-2.54" width="0.1524" layer="91"/>
+<label x="-27.94" y="-2.54" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
