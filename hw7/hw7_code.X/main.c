@@ -112,7 +112,7 @@ int main() {
         LCD_drawPixel(64, 80, WHITE);                           // Draw center point
         
         LED = !LED;                                             // Toggle LED for heartbeat
-        while (_CP0_GET_COUNT() <= 2400000) {;}                 // (48M/2)*.1sec => 10Hz cycles
+        while (_CP0_GET_COUNT() <= 1200000) {;}                 // (48M/2)*.05sec => 20Hz cycles
     }
     return 0;
 }
