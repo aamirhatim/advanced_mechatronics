@@ -84,8 +84,6 @@ int main() {
             LCD_drawPixel(14+i, 79+p, BLACK);
             LCD_drawPixel(63+p, 30+i, BLACK);
         }
-//        LCD_drawPixel(14+i, 80, BLACK);
-//        LCD_drawPixel(64, 30+i, BLACK);
     }
     
     while(1) {

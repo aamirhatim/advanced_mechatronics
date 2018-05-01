@@ -54,6 +54,12 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
+#include <stdio.h>
+#include "i2c.h"
+#include "ST7735.h"
+
+#define LED LATAbits.LATA4
+#define MAX_G 18000.0        // Upper limit for raw acceleration value
 
 // *****************************************************************************
 // *****************************************************************************
@@ -134,12 +140,23 @@ void APP_Initialize ( void )
 
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
-
-    // do your TRIS and LAT commands here
-    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
-    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
-    TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
+    
+    // Initialize LCD
+    LCD_init();
+    
+    // Initialize IMU
+    IMU_init();
+    
     __builtin_enable_interrupts();
+    
+    int i, p;
+    LCD_clearScreen(RED);
+    for (i = 0; i < 100; i++) {
+        for (p = 0; p < 3; p++) {
+            LCD_drawPixel(14+i, 79+p, BLACK);
+            LCD_drawPixel(63+p, 30+i, BLACK);
+        }
+    }
 }
 
 
@@ -173,14 +190,38 @@ void APP_Tasks ( void )
 
         case APP_STATE_SERVICE_TASKS:
         {
-            _CP0_SET_COUNT(0);                          // Set core timer to 0
-            if (PORTBbits.RB4 == 0) {
-            LATAbits.LATA4 = 0;                         // Turn off LED while button is pushed
+            // CODE //////////////////////////////////
+            int j, len = 14;
+            unsigned char data[len];
+            signed short info[7];
+            char msg[WIDTH-1];
+    
+            _CP0_SET_COUNT(0);
+            i2c_read_multiple(ADDRESS, OUT_TEMP_L, data, len);      // Get current IMU data
+            j = 0;
+            while (j < len) {                                       // Combine bytes in data array to get IMU info
+                signed short high = data[j+1] << 8;
+                signed short low = data[j];
+                info[j/2] = high|low;                               // Shift the high byte left 8 units and OR it with the low byte
+                j=j+2;
             }
-            else {
-                LATAbits.LATA4 = !LATAbits.LATA4;       // Turn on LED
-                while (_CP0_GET_COUNT() <= 12000) {;}   // (48M/2)*.0005sec = 12000
-            }
+        
+            float xscale = info[4]/MAX_G;
+            float yscale = info[5]/MAX_G;
+            int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
+            int ybar = 50*yscale;                                   // Scale for 50 pixel bar
+            sprintf(msg, "X: %d    ", xbar);
+            LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to screen
+            sprintf(msg, "Y: %d    ", ybar);
+            LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to screen
+            draw_xBar(xbar);                                        // Draw x tilt line
+            draw_yBar(ybar);                                        // Draw y tilt line
+            LCD_drawPixel(64, 80, WHITE);                           // Draw center point
+        
+            LED = !LED;                                             // Toggle LED for heartbeat
+            while (_CP0_GET_COUNT() <= 1200000) {;}                 // (48M/2)*.05sec => 20Hz cycles
+
+            //////////////////////////////////////////
 
             break;
         }
