@@ -63,6 +63,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
+#define LED LATAbits.LATA4
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
@@ -342,7 +343,9 @@ void APP_Initialize(void) {
 
     /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
     TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
-    LATAbits.LATA4 = 1;                 // Set RA4 to high (turn on LED)
+    LED = 1;                            // Set RA4 to high (turn on LED)
+    LCD_init();                         // Initialize LCD
+    IMU_init();                         // Initialize IMU
 
     startTime = _CP0_GET_COUNT();
 }
@@ -432,8 +435,6 @@ void APP_Tasks(void) {
             if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
             }
-
-
             break;
 
 
@@ -452,7 +453,8 @@ void APP_Tasks(void) {
             /* PUT THE TEXT YOU WANT TO SEND TO THE COMPUTER IN dataOut
             AND REMEMBER THE NUMBER OF CHARACTERS IN len */
             /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
-            len = sprintf(dataOut, "%d\r\n", i);
+            unsigned char data = i2c_read(0x28);
+            len = sprintf(dataOut, "%d\r\n", data);
             i++; // increment the index so we see a change in the text
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
             if (appData.isReadComplete) {
@@ -466,11 +468,9 @@ void APP_Tasks(void) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
+                startTime = _CP0_GET_COUNT(); // reset the timer for accurate delays
             }
-            
-            LATAbits.LATA4 = !LATAbits.LATA4;
-            while (_CP0_GET_COUNT() <= 12000000) {;}
+            LED = !LED;
             break;
 
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:

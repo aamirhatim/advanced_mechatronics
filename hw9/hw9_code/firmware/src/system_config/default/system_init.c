@@ -92,7 +92,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #pragma config PMDL1WAY =   OFF
 #pragma config IOL1WAY =    OFF
 #pragma config FUSBIDIO =   ON
-#pragma config FVBUSONIO =  ON
+#pragma config FVBUSONIO =  OFF
 // </editor-fold>
 
 // *****************************************************************************
