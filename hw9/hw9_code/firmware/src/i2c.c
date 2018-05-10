@@ -87,3 +87,13 @@ void i2c_read_multiple(unsigned char address, unsigned char reg, unsigned char *
     i2c_master_ack(1);                          // make the ack so the slave knows we got it
     i2c_master_stop();                          // make the stop bit
 }
+
+void combine_bytes(unsigned char * raw, signed short * data, int len) {
+    int j = 0;
+    while (j < len) {                                       // Combine bytes in data array to get IMU info
+        signed short high = raw[j+1] << 8;
+        signed short low = raw[j];
+        data[j/2] = high|low;                               // Shift the high byte left 8 units and OR it with the low byte
+        j=j+2;
+    }
+}

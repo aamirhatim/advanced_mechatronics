@@ -56,6 +56,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include <stdio.h>
 #include <xc.h>
+#include "ST7735.h"
+#include "i2c.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -64,10 +66,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #define LED LATAbits.LATA4
+#define MAX_G 18000.0        // Upper limit for raw acceleration value
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i = 0;
+int len, i = 0, j = 0;
 int startTime = 0; // to remember the loop time
+char msg[WIDTH-1];
+unsigned char rawData[12];
+signed short data[6];
 
 // *****************************************************************************
 /* Application Data
@@ -345,6 +351,7 @@ void APP_Initialize(void) {
     TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
     LED = 1;                            // Set RA4 to high (turn on LED)
     LCD_init();                         // Initialize LCD
+    LCD_clearScreen(RED);
     IMU_init();                         // Initialize IMU
 
     startTime = _CP0_GET_COUNT();
@@ -453,18 +460,61 @@ void APP_Tasks(void) {
             /* PUT THE TEXT YOU WANT TO SEND TO THE COMPUTER IN dataOut
             AND REMEMBER THE NUMBER OF CHARACTERS IN len */
             /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
-            unsigned char data = i2c_read(0x28);
-            len = sprintf(dataOut, "%d\r\n", data);
-            i++; // increment the index so we see a change in the text
+       
+            
+            
+            for (j = 0; j < 20; j++) {                                      // Get IMU data at 5*20 Hz
+                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
+                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+                len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
+                        data[3], data[4], data[5]);                         // Create string for XYZ acceleration
+//                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,                // Print to USB screen
+//                        &appData.writeTransferHandle, dataOut, len,
+//                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+//                startTime = _CP0_GET_COUNT();                               // reset the timer for accurate delays
+            }
+            
+            
+//            float xscale = data[3]/MAX_G;
+//            float yscale = data[4]/MAX_G;
+//            int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
+//            int ybar = 50*yscale;                                   // Scale for 50 pixel bar
+            // Print most recent IMU values
+            sprintf(msg, "X: %d    ", data[3]);
+            LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+            sprintf(msg, "Y: %d    ", data[4]);
+            LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+            sprintf(msg, "Z: %d    ", data[5]);
+            LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
+        
+            
+            i++;                                                    // increment the index so we see a change in the text
+            if (i >= 5) {                                           // Reset the count after 5 (indicates 100 samples of IMU read)
+                i = 0;
+            }           
+            
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
             if (appData.isReadComplete) {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                if (appData.readBuffer[0] == 'r') {
+                    len = sprintf(dataOut, "%c\r\n", appData.readBuffer[0]);
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
+                        dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                }
+                else {
+                    len = sprintf(dataOut, "nope\r\n");
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle,
+                        dataOut, len,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                }
+                
             }
             /* ELSE SEND THE MESSAGE YOU WANTED TO SEND */
             else {
+                len = 1;
+                dataOut[0] = 0;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
