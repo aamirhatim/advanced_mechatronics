@@ -13,3 +13,4 @@ This repo contains all mini-projects completed in ME 433: Advanced Mechatronics 
 ### [HW 7](hw7): Reading an IMU with I2C
 ### [HW 8](hw8): Coding with MPLAB Harmony
 ### [HW 9](hw9): USB Communication
+### [HW 10](hw10): Digital Signal Processing
