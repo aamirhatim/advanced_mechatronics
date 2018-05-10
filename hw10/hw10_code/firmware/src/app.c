@@ -58,6 +58,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <xc.h>
 #include "ST7735.h"
 #include "i2c.h"
+#include "filters.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -69,7 +70,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define MAX_G 18000.0           // Upper limit for raw acceleration value
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i, j;
+int len, i, j, bufflen = 4;
 int startTime = 0;              // To remember the loop time
 unsigned char rawData[12];      // High and low bytes from IMU
 signed short data[6];           // Combined bytes for real IMU measurements
@@ -465,6 +466,9 @@ void APP_Tasks(void) {
             /* IF R WAS RECEIVED, PRINT OUT 100 IMU RESULTS */
             if (appData.isReadComplete) {
                 if (appData.readBuffer[0] == 'r') {                                     // If user types 'r' then send IMU data to computer
+                    signed short maf_buffer[bufflen];                                   // Buffer for moving average filter
+                    init_buffer(maf_buffer, bufflen);                                   // Initialize array to 0
+                    
                     for (i = 0; i < 5; i++) {
                         for (j = 0; j < 20; j++) {
                             int t = _CP0_GET_COUNT();                                   // Get current time
@@ -472,6 +476,9 @@ void APP_Tasks(void) {
                             combine_bytes(rawData, data, 12);                           // Combine high and low bytes
                             len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
                                         data[3], data[4], data[5]);                     // Create string for XYZ acceleration
+                            
+                            
+                            
                             USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                                         &appData.writeTransferHandle,
                                         dataOut, len,

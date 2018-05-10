@@ -44,7 +44,7 @@ while ~has_quit
             fprintf("We're done here.\n\n");
             has_quit = true;
         otherwise
-            fprintf('Invalid entry\n\n');
+            fprintf('Invalid entry!\n\n');
     end
 end
 
