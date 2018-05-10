@@ -474,10 +474,12 @@ void APP_Tasks(void) {
                             int t = _CP0_GET_COUNT();                                   // Get current time
                             i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
                             combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+                            
+                            add_to_buffer(maf_buffer, data[3]);                         // Add new value to buffer
+                            int x_avg = average(maf_buffer);                            // Average buffer to get new value
+                            
                             len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
-                                        data[3], data[4], data[5]);                     // Create string for XYZ acceleration
-                            
-                            
+                                        x_avg, data[4], data[5]);                       // Create string for XYZ acceleration
                             
                             USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                                         &appData.writeTransferHandle,
