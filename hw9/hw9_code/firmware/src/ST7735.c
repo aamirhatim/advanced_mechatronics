@@ -15,6 +15,7 @@
 // B8 is turned into SDI1 but is not used or connected to anything
 
 #include <xc.h>
+#include <stdio.h>
 #include "ST7735.h"
 
 void SPI1_init() {
@@ -349,4 +350,14 @@ void draw_yBar(int y) {
             LCD_drawPixel(64, 80-i*s, BLACK);
             i++;
         }
+}
+
+void draw_IMU_XYZ(signed short x, signed short y, signed short z) {
+    char msg[WIDTH-1];
+    sprintf(msg, "X: %d    ", x);
+    LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+    sprintf(msg, "Y: %d    ", y);
+    LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+    sprintf(msg, "Z: %d    ", z);
+    LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
 }

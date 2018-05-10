@@ -65,15 +65,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#define LED LATAbits.LATA4
-#define MAX_G 18000.0        // Upper limit for raw acceleration value
+#define LED LATAbits.LATA4      // Heartbeat LED
+#define MAX_G 18000.0           // Upper limit for raw acceleration value
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i = 0, j = 0;
-int startTime = 0; // to remember the loop time
-char msg[WIDTH-1];
-unsigned char rawData[12];
-signed short data[6];
+int len, i, j;
+int startTime = 0;              // To remember the loop time
+unsigned char rawData[12];      // High and low bytes from IMU
+signed short data[6];           // Combined bytes for real IMU measurements
 
 // *****************************************************************************
 /* Application Data
@@ -459,46 +458,14 @@ void APP_Tasks(void) {
 
             /* PUT THE TEXT YOU WANT TO SEND TO THE COMPUTER IN dataOut
             AND REMEMBER THE NUMBER OF CHARACTERS IN len */
-            /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
-       
-            
-            
-//            for (j = 0; j < 20; j++) {                                      // Get IMU data at 5*20 Hz
-//                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
-//                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
-//                len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
-//                        data[3], data[4], data[5]);                         // Create string for XYZ acceleration
-////                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,                // Print to USB screen
-////                        &appData.writeTransferHandle, dataOut, len,
-////                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-////                startTime = _CP0_GET_COUNT();                               // reset the timer for accurate delays
-//            }
-//            
-//            
-////            float xscale = data[3]/MAX_G;
-////            float yscale = data[4]/MAX_G;
-////            int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
-////            int ybar = 50*yscale;                                   // Scale for 50 pixel bar
-//            // Print most recent IMU values
-//            sprintf(msg, "X: %d    ", data[3]);
-//            LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
-//            sprintf(msg, "Y: %d    ", data[4]);
-//            LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
-//            sprintf(msg, "Z: %d    ", data[5]);
-//            LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
-//        
-//            
-//            i++;                                                    // increment the index so we see a change in the text
-//            if (i >= 5) {                                           // Reset the count after 5 (indicates 100 samples of IMU read)
-//                i = 0;
-//            }           
+            /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */         
             
             /* IF R WAS RECEIVED, PRINT OUT 100 IMU RESULTS */
             if (appData.isReadComplete) {
-                if (appData.readBuffer[0] == 'r') {
+                if (appData.readBuffer[0] == 'r') {                                     // If user types 'r' then send IMU data to computer
                     for (i = 0; i < 5; i++) {
                         for (j = 0; j < 20; j++) {
-                            int t = _CP0_GET_COUNT();
+                            int t = _CP0_GET_COUNT();                                   // Get current time
                             i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
                             combine_bytes(rawData, data, 12);                           // Combine high and low bytes
                             len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
@@ -506,53 +473,42 @@ void APP_Tasks(void) {
                             USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                                         &appData.writeTransferHandle,
                                         dataOut, len,
-                                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                            while (_CP0_GET_COUNT() < t + 240000) {;}
+                                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);   // Send data to computer
+                            startTime = _CP0_GET_COUNT();                               // Reset the timer for accurate delays
+                            while (_CP0_GET_COUNT() < t + 240000) {;}                   // Wait to send data at 100Hz
                         }
                     
-                        sprintf(msg, "X: %d    ", data[3]);
-                        LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
-                        sprintf(msg, "Y: %d    ", data[4]);
-                        LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
-                        sprintf(msg, "Z: %d    ", data[5]);
-                        LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
+                        draw_IMU_XYZ(data[3], data[4], data[5]);                        // Draw IMU data to LCD (@ 5Hz)
                     }
                 }
-                else {
-                    i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
-                    combine_bytes(rawData, data, 12);                           // Combine high and low bytes
-                    sprintf(msg, "X: %d    ", data[3]);
-                    LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
-                    sprintf(msg, "Y: %d    ", data[4]);
-                    LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
-                    sprintf(msg, "Z: %d    ", data[5]);
-                    LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
-                    len = 1;
+                else {                                                                  // If another key is pressed, just print to LCD
+                    i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);                  // Read IMU data
+                    combine_bytes(rawData, data, 12);                                   // Combine high and low bytes
+                    draw_IMU_XYZ(data[3], data[4], data[5]);                            // Draw IMU data to LCD
+                    
+                    len = 1;                                                            // Edit len and dataOut to send a blank packet
                     dataOut[0] = 0;
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                             &appData.writeTransferHandle, dataOut, len,
-                            USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                    startTime = _CP0_GET_COUNT(); // reset the timer for accurate delays
+                            USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);               // Send empty packet
+                    startTime = _CP0_GET_COUNT();                                       // Reset the timer for accurate delays
                 }
             }
-            /* ELSE SEND THE MESSAGE YOU WANTED TO SEND */
+            /* ELSE ONLY PRINT TO LCD */
             else {
-                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
-                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
-                sprintf(msg, "X: %d    ", data[3]);
-                LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
-                sprintf(msg, "Y: %d    ", data[4]);
-                LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
-                sprintf(msg, "Z: %d    ", data[5]);
-                LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
-                len = 1;
+                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);                      // Read IMU data
+                combine_bytes(rawData, data, 12);                                       // Combine high and low bytes
+                draw_IMU_XYZ(data[3], data[4], data[5]);                                // Draw IMU data to LCD
+                
+                len = 1;                                                                // Edit len and dataOut to send a blank packet
                 dataOut[0] = 0;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                startTime = _CP0_GET_COUNT(); // reset the timer for accurate delays
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);                   // Send empty packet
+                startTime = _CP0_GET_COUNT();                                           // Reset the timer for accurate delays
             }
-            LED = !LED;
+            
+            LED = !LED;                                                                 // Toggle LED heartbeat
             break;
 
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:

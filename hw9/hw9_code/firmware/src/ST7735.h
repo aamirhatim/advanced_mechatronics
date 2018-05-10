@@ -185,5 +185,6 @@ void LCD_drawBox(unsigned short);
 void LCD_drawProgress(unsigned short, unsigned short, unsigned short);
 void draw_xBar(int);
 void draw_yBar(int);
+void draw_IMU_XYZ(signed short, signed short, signed short);
 
 #endif
