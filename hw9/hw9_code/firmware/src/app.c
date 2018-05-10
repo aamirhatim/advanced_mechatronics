@@ -463,56 +463,88 @@ void APP_Tasks(void) {
        
             
             
-            for (j = 0; j < 20; j++) {                                      // Get IMU data at 5*20 Hz
-                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
-                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
-                len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
-                        data[3], data[4], data[5]);                         // Create string for XYZ acceleration
-//                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,                // Print to USB screen
-//                        &appData.writeTransferHandle, dataOut, len,
-//                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-//                startTime = _CP0_GET_COUNT();                               // reset the timer for accurate delays
-            }
+//            for (j = 0; j < 20; j++) {                                      // Get IMU data at 5*20 Hz
+//                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
+//                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+//                len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
+//                        data[3], data[4], data[5]);                         // Create string for XYZ acceleration
+////                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,                // Print to USB screen
+////                        &appData.writeTransferHandle, dataOut, len,
+////                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+////                startTime = _CP0_GET_COUNT();                               // reset the timer for accurate delays
+//            }
+//            
+//            
+////            float xscale = data[3]/MAX_G;
+////            float yscale = data[4]/MAX_G;
+////            int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
+////            int ybar = 50*yscale;                                   // Scale for 50 pixel bar
+//            // Print most recent IMU values
+//            sprintf(msg, "X: %d    ", data[3]);
+//            LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+//            sprintf(msg, "Y: %d    ", data[4]);
+//            LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+//            sprintf(msg, "Z: %d    ", data[5]);
+//            LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
+//        
+//            
+//            i++;                                                    // increment the index so we see a change in the text
+//            if (i >= 5) {                                           // Reset the count after 5 (indicates 100 samples of IMU read)
+//                i = 0;
+//            }           
             
-            
-//            float xscale = data[3]/MAX_G;
-//            float yscale = data[4]/MAX_G;
-//            int xbar = -50*xscale;                                  // Scale for 50 pixel bar, flip the sign
-//            int ybar = 50*yscale;                                   // Scale for 50 pixel bar
-            // Print most recent IMU values
-            sprintf(msg, "X: %d    ", data[3]);
-            LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
-            sprintf(msg, "Y: %d    ", data[4]);
-            LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
-            sprintf(msg, "Z: %d    ", data[5]);
-            LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
-        
-            
-            i++;                                                    // increment the index so we see a change in the text
-            if (i >= 5) {                                           // Reset the count after 5 (indicates 100 samples of IMU read)
-                i = 0;
-            }           
-            
-            /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
+            /* IF R WAS RECEIVED, PRINT OUT 100 IMU RESULTS */
             if (appData.isReadComplete) {
                 if (appData.readBuffer[0] == 'r') {
-                    len = sprintf(dataOut, "%c\r\n", appData.readBuffer[0]);
-                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle,
-                        dataOut, len,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                    for (i = 0; i < 5; i++) {
+                        for (j = 0; j < 20; j++) {
+                            int t = _CP0_GET_COUNT();
+                            i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
+                            combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+                            len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
+                                        data[3], data[4], data[5]);                     // Create string for XYZ acceleration
+                            USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                                        &appData.writeTransferHandle,
+                                        dataOut, len,
+                                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                            while (_CP0_GET_COUNT() < t + 240000) {;}
+                        }
+                    
+                        sprintf(msg, "X: %d    ", data[3]);
+                        LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+                        sprintf(msg, "Y: %d    ", data[4]);
+                        LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+                        sprintf(msg, "Z: %d    ", data[5]);
+                        LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
+                    }
                 }
                 else {
-                    len = sprintf(dataOut, "nope\r\n");
+                    i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
+                    combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+                    sprintf(msg, "X: %d    ", data[3]);
+                    LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+                    sprintf(msg, "Y: %d    ", data[4]);
+                    LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+                    sprintf(msg, "Z: %d    ", data[5]);
+                    LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
+                    len = 1;
+                    dataOut[0] = 0;
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle,
-                        dataOut, len,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                            &appData.writeTransferHandle, dataOut, len,
+                            USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                    startTime = _CP0_GET_COUNT(); // reset the timer for accurate delays
                 }
-                
             }
             /* ELSE SEND THE MESSAGE YOU WANTED TO SEND */
             else {
+                i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
+                combine_bytes(rawData, data, 12);                           // Combine high and low bytes
+                sprintf(msg, "X: %d    ", data[3]);
+                LCD_drawString(10, 5, msg, BLACK, RED);                 // Print x-acceleration data to LCD
+                sprintf(msg, "Y: %d    ", data[4]);
+                LCD_drawString(10, 15, msg, BLACK, RED);                // Print y-acceleration data to LCD
+                sprintf(msg, "Z: %d    ", data[5]);
+                LCD_drawString(10, 25, msg, BLACK, RED);                // Print z-acceleration data to LCD
                 len = 1;
                 dataOut[0] = 0;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
