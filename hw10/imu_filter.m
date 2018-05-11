@@ -41,13 +41,16 @@ while ~has_quit
            fprintf("Done.\n");
            
            % Plot
-           figure();
+           figure("Name","Filter Comparison");
            hold on;
            plot(data(:,1), data(:,2));
            plot(data(:,1), data(:,3));
            plot(data(:,1), data(:,4));
            plot(data(:,1), data(:,5));
-           legend("Raw", "MAV", "FIR", "IIR");
+           legend("Raw", "MAF", "FIR", "IIR");
+           title("MAF, FIR, IIR Filter Comparison");
+           xlabel("Sample");
+           ylabel("Raw Acceleration Value");
         case 'q'
             fprintf("We're done here.\n\n");
             has_quit = true;
