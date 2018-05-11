@@ -70,10 +70,12 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define MAX_G 18000.0           // Upper limit for raw acceleration value
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i, j, bufflen = 4;
+int len, i, j;
+int maf_size = 9, fir_size = 9;
 int startTime = 0;              // To remember the loop time
 unsigned char rawData[12];      // High and low bytes from IMU
 signed short data[6];           // Combined bytes for real IMU measurements
+int x_maf, x_fir, x_iir;
 
 // *****************************************************************************
 /* Application Data
@@ -466,8 +468,11 @@ void APP_Tasks(void) {
             /* IF R WAS RECEIVED, PRINT OUT 100 IMU RESULTS */
             if (appData.isReadComplete) {
                 if (appData.readBuffer[0] == 'r') {                                     // If user types 'r' then send IMU data to computer
-                    signed short maf_buffer[bufflen];                                   // Buffer for moving average filter
-                    init_buffer(maf_buffer, bufflen);                                   // Initialize array to 0
+                    signed short maf_buffer[maf_size];                                   // Buffer for moving average filter
+                    signed short fir_buffer[fir_size];                                   // Buffer for moving average filter
+                    signed short iir_prev = 0;
+                    init_buffer(maf_buffer, maf_size);                                            // Initialize array to 0
+                    init_buffer(fir_buffer, fir_size);                                            // Initialize array to 0
                     
                     for (i = 0; i < 5; i++) {
                         for (j = 0; j < 20; j++) {
@@ -475,11 +480,20 @@ void APP_Tasks(void) {
                             i2c_read_multiple(ADDRESS, OUTX_L_G, rawData, 12);          // Read IMU data
                             combine_bytes(rawData, data, 12);                           // Combine high and low bytes
                             
-                            add_to_buffer(maf_buffer, data[3]);                         // Add new value to buffer
-                            int x_avg = average(maf_buffer);                            // Average buffer to get new value
+                            // MOVING AVERAGE FILTER
+                            add_to_buffer(maf_buffer, maf_size, data[3]);
+                            x_maf = maf(maf_buffer, maf_size);                                // Average buffer to get new value
                             
-                            len = sprintf(dataOut, "%d %d %d %d\r\n", ((20*i)+j+1), 
-                                        x_avg, data[4], data[5]);                       // Create string for XYZ acceleration
+                            // FIR FILTER
+                            add_to_buffer(fir_buffer, fir_size, data[3]);
+                            x_fir = fir(fir_buffer, fir_size);
+                            
+                            // IIR FILTER
+                            x_iir = iir(iir_prev, data[3]);
+                            iir_prev = data[3];
+                            
+                            len = sprintf(dataOut, "%d %d %d %d %d\r\n", ((20*i)+j+1), 
+                                        data[3], x_maf, x_fir, x_iir);                       // Create string for XYZ acceleration
                             
                             USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                                         &appData.writeTransferHandle,
