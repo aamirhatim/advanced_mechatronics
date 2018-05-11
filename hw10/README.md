@@ -7,7 +7,7 @@ A moving average filter uses a set of previous data along with the current data 
 #### Finite Impulse Response (FIR) Filter
 An FIR filter follows a similar setup as the MAF, but rather than dividing each element in the buffer by the same value (x), each element is divided by a specific weight where all the weights add up to 1. For this project, an 8th order FIR filter with a 5Hz cutoff frequency was used, meaning that there are 9 individual weights and a 9-element buffer.
 
-#### Infinite Impulse Response (FIR) Filter
+#### Infinite Impulse Response (IIR) Filter
 An IIR filter only uses the two most recent data samples and two weights (which also add up to 1). To compute the final output, the older data sample is multiplied by the first weight and the newer sample is multiplied by the second weight. The two weights can be tuned depending on the application. In cases where older data is much more reliable than a new incoming sample, more weight is typically given to the older sample. If there is good confidence that new data is fairly reliable, more weight is given to the newer sample. For this project, a .70/.30 weight set was used for the old and new samples, respectively.
 
 #### Results
