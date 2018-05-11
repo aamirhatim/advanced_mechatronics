@@ -32,14 +32,22 @@ while ~has_quit
     switch selection
         case 'r'
            fprintf("Waiting for samples...\n");
-           data = zeros(100,4);
+           data = zeros(100,5);
            
            % Read IMU data into MATLAB variable
            for i = 1:100
-               data(i,:) = fscanf(mySerial, '%d %d %d %d');
+               data(i,:) = fscanf(mySerial, '%d %d %d %d %d');
            end
            fprintf("Done.\n");
-           data
+           
+           % Plot
+           figure();
+           hold on;
+           plot(data(:,1), data(:,2));
+           plot(data(:,1), data(:,3));
+           plot(data(:,1), data(:,4));
+           plot(data(:,1), data(:,5));
+           legend("Raw", "MAV", "FIR", "IIR");
         case 'q'
             fprintf("We're done here.\n\n");
             has_quit = true;
