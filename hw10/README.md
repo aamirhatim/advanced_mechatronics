@@ -1,5 +1,5 @@
 # Homework 10: Digital Signal Processing
-This project implements three different filters on the x-axis of IMU acceleration data. Building off of [../hw9](HW 9), the user uses a MATLAB interface to read in the IMU data and display the performance of each filter.
+This project implements three different filters on the x-axis of IMU acceleration data. Building off of [homework 9](../hw9), the user uses a MATLAB interface to read in the IMU data and display the performance of each filter.
 
 #### Moving Average Filter (MAF)
 A moving average filter uses a set of previous data along with the current data sample to output a new sample that is an average of the whole subset. For example, an x-ordered MAF takes the x most recent data samples, sums them up, and then divides that value by x to get the final averaged output. The larger x is, the smoother the output data will be. For this project, an 8th order MAF was used to get approximately a 5Hz cutoff frequency.
