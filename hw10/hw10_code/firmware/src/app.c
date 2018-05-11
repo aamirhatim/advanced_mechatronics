@@ -75,7 +75,7 @@ int maf_size = 9, fir_size = 9;
 int startTime = 0;              // To remember the loop time
 unsigned char rawData[12];      // High and low bytes from IMU
 signed short data[6];           // Combined bytes for real IMU measurements
-int x_maf, x_fir, x_iir;
+int x_maf, x_fir, x_iir;        // values for filtered x-acceleration
 
 // *****************************************************************************
 /* Application Data
@@ -468,11 +468,11 @@ void APP_Tasks(void) {
             /* IF R WAS RECEIVED, PRINT OUT 100 IMU RESULTS */
             if (appData.isReadComplete) {
                 if (appData.readBuffer[0] == 'r') {                                     // If user types 'r' then send IMU data to computer
-                    signed short maf_buffer[maf_size];                                   // Buffer for moving average filter
-                    signed short fir_buffer[fir_size];                                   // Buffer for moving average filter
-                    signed short iir_prev = 0;
-                    init_buffer(maf_buffer, maf_size);                                            // Initialize array to 0
-                    init_buffer(fir_buffer, fir_size);                                            // Initialize array to 0
+                    signed short maf_buffer[maf_size];                                  // Buffer for moving average filter
+                    signed short fir_buffer[fir_size];                                  // Buffer for moving average filter
+                    signed short iir_prev = 0;                                          // Initialize previous value for IIR filter
+                    init_buffer(maf_buffer, maf_size);                                  // Initialize array to 0
+                    init_buffer(fir_buffer, fir_size);                                  // Initialize array to 0
                     
                     for (i = 0; i < 5; i++) {
                         for (j = 0; j < 20; j++) {
@@ -481,19 +481,19 @@ void APP_Tasks(void) {
                             combine_bytes(rawData, data, 12);                           // Combine high and low bytes
                             
                             // MOVING AVERAGE FILTER
-                            add_to_buffer(maf_buffer, maf_size, data[3]);
-                            x_maf = maf(maf_buffer, maf_size);                                // Average buffer to get new value
+                            add_to_buffer(maf_buffer, maf_size, data[3]);               // Update buffer
+                            x_maf = maf(maf_buffer, maf_size);                          // Average buffer to get new value
                             
                             // FIR FILTER
-                            add_to_buffer(fir_buffer, fir_size, data[3]);
-                            x_fir = fir(fir_buffer, fir_size);
+                            add_to_buffer(fir_buffer, fir_size, data[3]);               // Update buffer
+                            x_fir = fir(fir_buffer, fir_size);                          // Compute FIR output
                             
                             // IIR FILTER
-                            x_iir = iir(iir_prev, data[3]);
-                            iir_prev = data[3];
+                            x_iir = iir(iir_prev, data[3]);                             // Compute IIR output
+                            iir_prev = data[3];                                         // Update old value for IIR
                             
                             len = sprintf(dataOut, "%d %d %d %d %d\r\n", ((20*i)+j+1), 
-                                        data[3], x_maf, x_fir, x_iir);                       // Create string for XYZ acceleration
+                                        data[3], x_maf, x_fir, x_iir);                  // Create string for X acceleration filtered outputs
                             
                             USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                                         &appData.writeTransferHandle,
