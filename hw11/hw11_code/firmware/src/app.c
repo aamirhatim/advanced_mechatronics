@@ -54,7 +54,11 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
+#include "ST7735.h"
+#include "i2c.h"
 
+#define LED LATAbits.LATA4      // Heartbeat LED
+#define MAX_G 18000
 
 // *****************************************************************************
 // *****************************************************************************
@@ -268,6 +272,12 @@ void APP_Initialize(void) {
     //appData.emulateMouse = true;
     appData.hidInstance = 0;
     appData.isMouseReportSendBusy = false;
+    
+    TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
+    LED = 1;                            // Set RA4 to high (turn on LED)
+    LCD_init();                         // Initialize LCD
+    LCD_clearScreen(RED);
+    IMU_init();                         // Initialize IMU
 }
 
 /******************************************************************************
@@ -283,6 +293,9 @@ void APP_Tasks(void) {
 //    static uint8_t movement_length = 0;
 //    int8_t dir_table[] = {-4, -4, -4, 0, 4, 4, 4, 0};
     static uint8_t inc = 0;
+    static unsigned char raw[4];
+    static signed short data[2];
+    static signed short xval = 0, yval = 0;
 
     /* Check the application's current state. */
     switch (appData.state) {
@@ -321,6 +334,17 @@ void APP_Tasks(void) {
             
             // every 50th loop, or 20 times per second
             if (inc > 200) {
+                // Read x and y acceleration from IMU
+                i2c_read_multiple(ADDRESS, OUTX_L_XL, raw, 4);
+                combine_bytes(raw, data, 4);
+                
+                // Scale values
+                xval = data[0]/(MAX_G/4);
+                yval = data[1]/(MAX_G/4);
+                
+                // Print values to LCD
+                draw_IMU_XYZ(xval, yval, 0);
+                
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.xCoordinate = (int8_t) 1;

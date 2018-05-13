@@ -23,6 +23,8 @@
         </logicalFolder>
         <itemPath>../src/app.h</itemPath>
         <itemPath>../src/mouse.h</itemPath>
+        <itemPath>../src/i2c.h</itemPath>
+        <itemPath>../src/ST7735.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="framework" projectFiles="true">
         <logicalFolder name="f1" displayName="driver" projectFiles="true">
@@ -136,6 +138,8 @@
         <itemPath>../src/app.c</itemPath>
         <itemPath>../src/main.c</itemPath>
         <itemPath>../src/mouse.c</itemPath>
+        <itemPath>../src/i2c.c</itemPath>
+        <itemPath>../src/ST7735.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="framework" projectFiles="true">
         <logicalFolder name="f2" displayName="driver" projectFiles="true">
@@ -346,6 +350,7 @@
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
         <property key="UART1" value="true"/>
         <property key="UART2" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
