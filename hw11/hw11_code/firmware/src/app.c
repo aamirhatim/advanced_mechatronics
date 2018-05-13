@@ -333,14 +333,14 @@ void APP_Tasks(void) {
         case APP_STATE_MOUSE_EMULATE:
             
             // every 50th loop, or 20 times per second
-            if (inc > 200) {
+            if (inc > 10) {
                 // Read x and y acceleration from IMU
                 i2c_read_multiple(ADDRESS, OUTX_L_XL, raw, 4);
                 combine_bytes(raw, data, 4);
                 
                 // Scale values for mouse movement
-                xval = data[0]/(MAX_G/4);
-                yval = data[1]/(MAX_G/4);
+                xval = data[0]/(MAX_G/15);
+                yval = data[1]/(MAX_G/15);
                 
                 // Print values to LCD
                 draw_IMU_XYZ(xval, yval, 0);
