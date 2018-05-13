@@ -338,7 +338,7 @@ void APP_Tasks(void) {
                 i2c_read_multiple(ADDRESS, OUTX_L_XL, raw, 4);
                 combine_bytes(raw, data, 4);
                 
-                // Scale values
+                // Scale values for mouse movement
                 xval = data[0]/(MAX_G/4);
                 yval = data[1]/(MAX_G/4);
                 
@@ -347,8 +347,8 @@ void APP_Tasks(void) {
                 
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) 1;
-                appData.yCoordinate = (int8_t) 1;
+                appData.xCoordinate = (int8_t) xval;
+                appData.yCoordinate = (int8_t) yval;
 //                vector++;
                 inc = 0;
             }
