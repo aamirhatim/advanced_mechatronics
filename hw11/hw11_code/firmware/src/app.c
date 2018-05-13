@@ -279,9 +279,9 @@ void APP_Initialize(void) {
  */
 
 void APP_Tasks(void) {
-    static int8_t vector = 0;
-    static uint8_t movement_length = 0;
-    int8_t dir_table[] = {-4, -4, -4, 0, 4, 4, 4, 0};
+//    static int8_t vector = 0;
+//    static uint8_t movement_length = 0;
+//    int8_t dir_table[] = {-4, -4, -4, 0, 4, 4, 4, 0};
 
     /* Check the application's current state. */
     switch (appData.state) {
@@ -319,14 +319,14 @@ void APP_Tasks(void) {
         case APP_STATE_MOUSE_EMULATE:
             
             // every 50th loop, or 20 times per second
-            if (movement_length > 50) {
+//            if (movement_length > 50) {
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) dir_table[vector & 0x07];
-                appData.yCoordinate = (int8_t) dir_table[(vector + 2) & 0x07];
-                vector++;
-                movement_length = 0;
-            }
+                appData.xCoordinate = (int8_t) 1;
+                appData.yCoordinate = (int8_t) 1;
+//                vector++;
+//                movement_length = 0;
+//            }
 
             if (!appData.isMouseReportSendBusy) {
                 /* This means we can send the mouse report. The
@@ -378,7 +378,7 @@ void APP_Tasks(void) {
                             sizeof (MOUSE_REPORT));
                     appData.setIdleTimer = 0;
                 }
-                movement_length++;
+//                movement_length++;
             }
 
             break;
