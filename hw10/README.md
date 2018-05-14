@@ -16,4 +16,4 @@ An IIR filter only uses the two most recent data samples and two weights (which 
 ![image](shake.png)
 *Top: Data when IMU is at rest. This is essentially a measurement of the sensor's noise. Bottom: Data when the IMU is rotated on its y-axis, creating acceleration along the x-axis.*
 
-Based on the results, the .70/.30 IIR filter seems to perform the best. It does not smooth the data too much, and has a very small delay (likely due to its simple computation) compared to the moving average and FIR filters.
+Based on the results, the FIR filter seems to perform the best. It does a better job representing the original data than the moving average filter, but it has roughly the same delay (about .03-.04s). The IIR filter has a very small delay of around .01s, but it does not do a great job smoothing out the data compared to the other filters.  
