@@ -58,6 +58,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "i2c.h"
 
 #define LED LATAbits.LATA4      // Heartbeat LED
+#define USER PORTBbits.RB4       // USER button
 #define MAX_G 18000
 
 // *****************************************************************************
@@ -273,6 +274,7 @@ void APP_Initialize(void) {
     appData.hidInstance = 0;
     appData.isMouseReportSendBusy = false;
     
+    TRISBbits.TRISB4 = 1;               // Make RB4 an input pin
     TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
     LED = 1;                            // Set RA4 to high (turn on LED)
     LCD_init();                         // Initialize LCD
@@ -333,7 +335,7 @@ void APP_Tasks(void) {
         case APP_STATE_MOUSE_EMULATE:
             
             // every 50th loop, or 20 times per second
-            if (inc > 10) {
+            if (inc > 50) {
                 // Read x and y acceleration from IMU
                 i2c_read_multiple(ADDRESS, OUTX_L_XL, raw, 4);
                 combine_bytes(raw, data, 4);
@@ -341,14 +343,20 @@ void APP_Tasks(void) {
                 // Scale values for mouse movement
                 xval = data[0]/(MAX_G/15);
                 yval = data[1]/(MAX_G/15);
+                appData.xCoordinate = (int8_t) xval;
+                appData.yCoordinate = (int8_t) yval;
                 
                 // Print values to LCD
                 draw_IMU_XYZ(xval, yval, 0);
                 
-                appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
+                // Check if button was pressed
+                if (USER == 0) {
+                    appData.mouseButton[0] = MOUSE_BUTTON_STATE_PRESSED;
+                }
+                else {
+                    appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
+                }
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) xval;
-                appData.yCoordinate = (int8_t) yval;
 //                vector++;
                 inc = 0;
             }
@@ -357,6 +365,7 @@ void APP_Tasks(void) {
                 appData.yCoordinate = (int8_t) 0;
                 inc++;
             }
+            
 
             if (!appData.isMouseReportSendBusy) {
                 /* This means we can send the mouse report. The
