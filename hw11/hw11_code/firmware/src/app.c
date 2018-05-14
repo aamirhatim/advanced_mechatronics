@@ -291,9 +291,6 @@ void APP_Initialize(void) {
  */
 
 void APP_Tasks(void) {
-//    static int8_t vector = 0;
-//    static uint8_t movement_length = 0;
-//    int8_t dir_table[] = {-4, -4, -4, 0, 4, 4, 4, 0};
     static uint8_t inc = 0;
     static unsigned char raw[4];
     static signed short data[2];
@@ -357,7 +354,6 @@ void APP_Tasks(void) {
                     appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 }
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-//                vector++;
                 inc = 0;
             }
             else {
@@ -417,7 +413,6 @@ void APP_Tasks(void) {
                             sizeof (MOUSE_REPORT));
                     appData.setIdleTimer = 0;
                 }
-//                inc++;
             }
 
             break;
