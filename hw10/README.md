@@ -11,3 +11,9 @@ An FIR filter follows a similar setup as the MAF, but rather than dividing each 
 An IIR filter only uses the two most recent data samples and two weights (which also add up to 1). To compute the final output, the older data sample is multiplied by the first weight and the newer sample is multiplied by the second weight. The two weights can be tuned depending on the application. In cases where older data is much more reliable than a new incoming sample, more weight is typically given to the older sample. If there is good confidence that new data is fairly reliable, more weight is given to the newer sample. For this project, a .70/.30 weight set was used for the old and new samples, respectively.
 
 #### Results
+![image](still.png)
+
+![image](shake.png)
+*Top: Data when IMU is at rest. This is essentially a measurement of the sensor's noise. Bottom: Data when the IMU is rotated on its y-axis, creating acceleration along the x-axis.*
+
+Based on the results, the .70/.30 IIR filter seems to perform the best. It does not smooth the data too much, and has a very small delay (likely due to its simple computation) compared to the moving average and FIR filters.
