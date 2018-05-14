@@ -330,6 +330,14 @@ void APP_Tasks(void) {
             break;
 
         case APP_STATE_MOUSE_EMULATE:
+            // Check if button was pressed
+            if (USER == 0) {
+                appData.mouseButton[0] = MOUSE_BUTTON_STATE_PRESSED;
+            }
+            else {
+                appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
+            }
+            appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
             
             // every 50th loop, or 20 times per second
             if (inc > 50) {
@@ -345,15 +353,6 @@ void APP_Tasks(void) {
                 
                 // Print values to LCD
                 draw_IMU_XYZ(xval, yval, 0);
-                
-                // Check if button was pressed
-                if (USER == 0) {
-                    appData.mouseButton[0] = MOUSE_BUTTON_STATE_PRESSED;
-                }
-                else {
-                    appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
-                }
-                appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
                 inc = 0;
             }
             else {
