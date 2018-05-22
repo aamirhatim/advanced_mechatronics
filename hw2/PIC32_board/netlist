@@ -1,0 +1,126 @@
+Netlist
+
+Exported from board.brd at 5/22/18 1:33 PM
+
+EAGLE Version 8.7.1 Copyright (c) 1988-2018 Autodesk, Inc.
+
+Net      Part       Pad
+
++3V3     C1         1
+         C2         1
+         C4         1
+         C7         1
+         CONN1      7
+         PIC        13
+         PIC        23
+         PIC        28
+         PROGRAMMER 2
+         R3         2
+         R4         2
+         RED        A
+         U$1        2
+
++5V      CONN2      2
+         PIC        15
+         SWITCH     2
+         U$1        3
+         U$1        4
+
+A0       CONN1      1
+         PIC        2
+
+A1       CONN1      2
+         PIC        3
+
+A4/LED   CONN1      6
+         GREEN      A
+         PIC        12
+
+B2       CONN1      3
+         PIC        6
+
+B3       CONN1      4
+         PIC        7
+
+B4/USER  CONN1      5
+         PIC        11
+         R4         1
+         USER       1.B
+
+B7       CONN2      3
+         PIC        16
+
+B8       CONN2      4
+         PIC        17
+
+B9       CONN2      5
+         PIC        18
+
+B13      CONN2      6
+         PIC        24
+
+B14      CONN2      7
+         PIC        25
+
+B15      CONN2      8
+         PIC        26
+
+D+       J1         D+
+         PIC        21
+
+D-       J1         D-
+         PIC        22
+
+GND      C1         2
+         C2         2
+         C3         2
+         C4         2
+         C5         2
+         C7         2
+         CLOCK      2
+         CONN1      8
+         CONN2      1
+         J1         GND
+         PIC        19
+         PIC        27
+         PIC        8
+         PROGRAMMER 3
+         R1         1
+         R2         1
+         RESET      2.A
+         U$1        1
+         USER       2.A
+
+MCLR     PIC        1
+         PROGRAMMER 1
+         R3         1
+         RESET      1.B
+
+N$1      GREEN      C
+         R2         2
+
+N$2      R1         2
+         RED        C
+
+N$5      C3         1
+         J1         VBUS
+         SWITCH     1
+
+OSC1     CLOCK      1
+         PIC        9
+
+OSC2     CLOCK      3
+         PIC        10
+
+PGC      PIC        5
+         PROGRAMMER 5
+
+PGD      PIC        4
+         PROGRAMMER 4
+
+USBID    J1         ID
+         PIC        14
+
+VCAP     C5         1
+         PIC        20
+
