@@ -26,6 +26,17 @@
             android:layout_width="640px"
             android:layout_height="480px" />
 
+        <SeekBar
+            android:id="@+id/seek1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:progress="0"
+            android:secondaryProgress="0"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            />
+
         <TextureView
             android:id="@+id/textureview"
             android:layout_width="640px"

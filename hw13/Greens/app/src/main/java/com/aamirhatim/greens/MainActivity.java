@@ -36,6 +36,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
     private TextView mTextView;
+    private SeekBar thresh_adj;
 
     static long prevtime = 0; // for FPS calculation
 
@@ -45,6 +46,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
+        thresh_adj = (SeekBar) findViewById(R.id.seek1);
 
         // see if the app has permission to use the camera
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -100,7 +102,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-            int thresh = 0; // comparison value
+            int thresh = 50; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             int startY = 200; // which row in the bitmap to analyze to read
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
@@ -130,5 +132,24 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         long diff = nowtime - prevtime;
         mTextView.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
+    }
+
+    private void readSlider() {
+        thresh_adj.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 }
