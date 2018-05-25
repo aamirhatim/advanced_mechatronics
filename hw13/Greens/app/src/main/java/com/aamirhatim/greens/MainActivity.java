@@ -37,6 +37,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
     private SeekBar thresh_adj;
+    private int thresh = 0;
 
     static long prevtime = 0; // for FPS calculation
 
@@ -102,7 +103,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-            int thresh = 50; // comparison value
+            readSlider();
+//            int thresh = 50; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             int startY = 200; // which row in the bitmap to analyze to read
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
@@ -136,9 +138,11 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     private void readSlider() {
         thresh_adj.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int thresh_changed = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                thresh_changed = progress;
+                thresh = progress;
             }
 
             @Override
