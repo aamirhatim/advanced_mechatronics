@@ -129,7 +129,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         canvas.drawCircle(pos, 240, 5, paint1); // x position, y position, diameter, color
 
         // write the pos as text
-        canvas.drawText("pos = " + pos, 10, 200, paint1);
+        canvas.drawText("thresh = " + thresh, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
