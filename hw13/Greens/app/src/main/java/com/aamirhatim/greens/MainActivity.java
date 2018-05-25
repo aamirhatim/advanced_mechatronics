@@ -105,7 +105,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         if (c != null) {
             readSlider(); // Read threshold slider
 //            int thresh = 50; // comparison value
-            for (int j = 0; j < bmp.getHeight(); j+=3) {
+            for (int j = 0; j < bmp.getHeight(); j+=4) {
                 int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
 //                int startY = 200; // which row in the bitmap to analyze to read
                 bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
