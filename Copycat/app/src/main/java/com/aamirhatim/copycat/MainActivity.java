@@ -2,6 +2,7 @@ package com.aamirhatim.copycat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -25,7 +26,16 @@ public class MainActivity extends AppCompatActivity {
         sliderVal = (TextView) findViewById(R.id.textView01);
         buttonVal = (TextView) findViewById(R.id.textView02);
         usbVal = (TextView) findViewById(R.id.textView03);
+        button = (Button) findViewById(R.id.button1);
         scrollview = (ScrollView) findViewById(R.id.ScrollView01);
+
+        // Initialize button functionality
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonVal.setText("Value sent: " + sendNum.getProgress());
+            }
+        });
 
         setVal();   // Read slider bar value and print it
 
@@ -38,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 valChanged = progress;
-                sliderVal.setText("Value set to: " + progress);
+                sliderVal.setText("Slider set to: " + progress);
             }
 
             @Override
@@ -53,7 +63,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendVal() {
-        
-    }
 }
