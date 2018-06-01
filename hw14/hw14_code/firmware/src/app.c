@@ -403,6 +403,13 @@ void APP_Tasks(void) {
 
             appData.state = APP_STATE_WAIT_FOR_READ_COMPLETE;
             if (appData.isReadComplete == true) {
+                appData.isReadComplete = false;
+                appData.readTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
+
+                USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0,
+                        &appData.readTransferHandle, appData.readBuffer,
+                        APP_READ_BUFFER_SIZE);
+                
                 int ii = 0;
                 // loop thru the characters in the buffer
                 while (appData.readBuffer[ii] != 0) {
