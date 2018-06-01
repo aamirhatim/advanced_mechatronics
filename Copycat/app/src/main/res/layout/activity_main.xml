@@ -13,15 +13,6 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <SeekBar
             android:id="@+id/seek1"
             android:layout_width="fill_parent"
@@ -38,7 +29,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send value!" />
 
+        <TextView
+            android:id="@+id/textView02"
+            android:text="nothing from button yet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
     </LinearLayout>
 

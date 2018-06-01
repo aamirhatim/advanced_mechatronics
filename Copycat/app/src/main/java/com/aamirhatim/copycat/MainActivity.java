@@ -18,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
 
         sendNum = (SeekBar) findViewById(R.id.seek1);
         numVal = (TextView) findViewById(R.id.textView01);
+
+        setVal();   // Read slider bar value and print it
+
     }
 
     private void setVal() {
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 valChanged = progress;
+                numVal.setText("Value set to: " + progress);
             }
 
             @Override
