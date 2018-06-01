@@ -39,8 +39,20 @@
             android:id="@+id/textView02"
             android:text="nothing from button yet"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:id="@+id/ScrollView01"
+            android:layout_width="wrap_content"
+            android:layout_height="250dip">
+
+            <TextView
+                android:id="@+id/textView03"
+                android:text="nothing from usb yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_green_light" />
+        </ScrollView>
 
     </LinearLayout>
 
