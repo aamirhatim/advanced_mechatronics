@@ -2,14 +2,19 @@ package com.aamirhatim.copycat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     SeekBar sendNum;
-    TextView numVal;
-
+    TextView sliderVal;
+    TextView buttonVal;
+    TextView usbVal;
+    Button button;
+    ScrollView scrollview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +22,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sendNum = (SeekBar) findViewById(R.id.seek1);
-        numVal = (TextView) findViewById(R.id.textView01);
+        sliderVal = (TextView) findViewById(R.id.textView01);
+        buttonVal = (TextView) findViewById(R.id.textView02);
+        usbVal = (TextView) findViewById(R.id.textView03);
+        scrollview = (ScrollView) findViewById(R.id.ScrollView01);
 
         setVal();   // Read slider bar value and print it
 
@@ -30,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 valChanged = progress;
-                numVal.setText("Value set to: " + progress);
+                sliderVal.setText("Value set to: " + progress);
             }
 
             @Override
@@ -43,5 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void sendVal() {
+        
     }
 }
