@@ -108,9 +108,16 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
             for (int i = 0; i < bmp.getWidth(); i++) {
-                if (red(pixels[i]) > thresh || green(pixels[i]) > thresh || blue(pixels[i]) > thresh) {
+                int[] prev_pix = {0,0,0,0};         // Create averaging array
+                int pix_avg = get_pixel_average(prev_pix);
+                if (((red(pixels[i])+blue(pixels[i])+green(pixels[i]))/3) > pix_avg && pix_avg < thresh) {
                     pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
                 }
+                shift_averager(prev_pix, pixels);
+
+//                if (red(pixels[i]) > thresh || green(pixels[i]) > thresh || blue(pixels[i]) > thresh) {
+//                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+//                }
             }
 
             // update the row
@@ -171,5 +178,23 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
             }
         });
+    }
+
+    private int get_pixel_average(int[] pixels) {
+        int avg = 0;
+        for (int i = 0; i < pixels.length; i++) {
+            avg += pixels[i];
+        }
+        avg = (int) avg/pixels.length;
+        return avg;
+    }
+
+    private int[] shift_averager(int[] pixels, int[] new_val) {
+        for (int i = pixels.length-1; i > 0; i--) {
+            pixels[i] = pixels[i - 1];
+        }
+        int avg = (new_val[0]+new_val[1]+new_val[2])/3;
+        pixels[0] = avg;
+        return pixels;
     }
 }
