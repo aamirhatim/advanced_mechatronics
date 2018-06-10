@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,7 +38,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
     private SeekBar thresh_adj;
-    private int thresh = 0, rgb_max = 255;
+    private SeekBar sensitivity_adj;
+    private int thresh = 0, sensitivity = 0, rgb_max = 255;
 
     static long prevtime = 0; // for FPS calculation
 
@@ -48,6 +50,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
         thresh_adj = (SeekBar) findViewById(R.id.seek1);
+        sensitivity_adj = (SeekBar) findViewById(R.id.seek2);
 
         // see if the app has permission to use the camera
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -107,21 +110,29 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             int line_height = 200;
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
-            int[] prev_pix = {0,0,0,0};         // Create averaging array
-            for (int i = 0; i < bmp.getWidth(); i++) {
-                int pix_avg = get_pixel_average(prev_pix);
-                if ((((red(pixels[i])+blue(pixels[i])+green(pixels[i]))/3) - pix_avg > 20) && pix_avg < thresh) {
-                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
-                }
-                prev_pix = shift_averager(prev_pix, pixels);
+//            int[] prev_pix = {0,0,0,0};         // Create averaging array
+            for (int i = 4; i < bmp.getWidth()-5; i++) {
+//                int pix_avg = get_pixel_average(prev_pix);
+//                if ((((red(pixels[i])+blue(pixels[i])+green(pixels[i]))/3) - pix_avg > 20) && pix_avg < thresh) {
+//                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+//
+//                    // update the row
+//                    bmp.setPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
+//                }
+//                prev_pix = shift_averager(prev_pix, pixels);
 
 //                if (red(pixels[i]) > thresh || green(pixels[i]) > thresh || blue(pixels[i]) > thresh) {
 //                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
 //                }
 
-                // update the row
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
+                if (green(pixels[i]) > thresh && green(pixels[i+5]) - green(pixels[i]) > thresh) {
+                    pixels[i] = rgb(255, 0, 0); // over write the pixel with pure red
+
+                }
+
+
             }
+            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
 
 
 
