@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
     private SeekBar thresh_adj;
-    private int thresh = 0;
+    private int thresh = 0, rgb_max = 255;
 
     static long prevtime = 0; // for FPS calculation
 
@@ -104,22 +104,33 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
             readSlider(); // Read threshold slider
-//            int thresh = 50; // comparison value
-            for (int j = 0; j < bmp.getHeight(); j+=4) {
-                int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
-//                int startY = 200; // which row in the bitmap to analyze to read
-                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
-
-                // in the row, see if there is more green than red
-                for (int i = 0; i < bmp.getWidth(); i++) {
-                    if ((green(pixels[i]) - red(pixels[i])) > thresh) {
-                        pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
-                    }
+            int line_height = 200;
+            int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
+            for (int i = 0; i < bmp.getWidth(); i++) {
+                if (red(pixels[i]) > thresh || green(pixels[i]) > thresh || blue(pixels[i]) > thresh) {
+                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
                 }
-
-                // update the row
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
             }
+
+            // update the row
+            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
+
+
+//            for (int j = 0; j < bmp.getHeight(); j+=4) {
+//                int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+//                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+//
+//                // in the row, see if there is more green than red
+//                for (int i = 0; i < bmp.getWidth(); i++) {
+//                    if ((green(pixels[i]) - red(pixels[i])) > thresh) {
+//                        pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+//                    }
+//                }
+//
+//                // update the row
+//                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+//            }
 
 
         }
@@ -146,7 +157,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 thresh_changed = progress;
-                thresh = progress;
+                float rgb_val = (progress*rgb_max)/100;
+                thresh = (int) rgb_val;
             }
 
             @Override
