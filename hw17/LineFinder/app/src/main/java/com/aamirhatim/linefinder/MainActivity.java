@@ -125,8 +125,13 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 //                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
 //                }
 
-                if (green(pixels[i]) > thresh && green(pixels[i+5]) - green(pixels[i]) > thresh) {
+                if (green(pixels[i]) > thresh && green(pixels[i+5]) - green(pixels[i]) > sensitivity) {
                     pixels[i] = rgb(255, 0, 0); // over write the pixel with pure red
+
+                }
+
+                if (blue(pixels[i]) > thresh && blue(pixels[i]) - blue(pixels[i+5]) > sensitivity) {
+                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure red
 
                 }
 
@@ -179,6 +184,26 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 thresh_changed = progress;
                 float rgb_val = (progress*rgb_max)/100;
                 thresh = (int) rgb_val;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        sensitivity_adj.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int sens_changed = 0;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                sens_changed = progress;
+                float sens_rgb = (progress*rgb_max)/100;
+                sensitivity = (int) sens_rgb;
             }
 
             @Override
