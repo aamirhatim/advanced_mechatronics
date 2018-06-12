@@ -26,6 +26,12 @@
             android:layout_width="640px"
             android:layout_height="480px" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Black Threshold = 0"
+            android:id="@+id/thresh_val"/>
+
         <SeekBar
             android:id="@+id/seek1"
             android:layout_width="fill_parent"
@@ -36,6 +42,12 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensitivity = 0"
+            android:id="@+id/sens_val"/>
 
         <SeekBar
             android:id="@+id/seek2"
