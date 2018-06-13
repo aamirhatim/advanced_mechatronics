@@ -56,6 +56,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include <stdio.h>
 #include <xc.h>
+#include "motor_control.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -349,6 +350,11 @@ void APP_Initialize(void) {
     /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
     TRISAbits.TRISA4 = 0;               // Make RA4 an output pin
     LED = 1;                            // Set RA4 to high (turn on LED)
+    
+    // Initialize motor controller
+    init_motors();
+    init_encoders();
+    init_controller();
 
     startTime = _CP0_GET_COUNT();
 }

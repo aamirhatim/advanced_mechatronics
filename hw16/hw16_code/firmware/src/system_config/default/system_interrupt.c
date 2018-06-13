@@ -75,6 +75,12 @@ void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
     DRV_USBFS_Tasks_ISR(sysObj.drvUSBObject);
 }
 
+void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
+  // code for PI control goes here
+
+  IFS0bits.T4IF = 0; // clear interrupt flag, last line
+}
+
 /*******************************************************************************
  End of File
 */
