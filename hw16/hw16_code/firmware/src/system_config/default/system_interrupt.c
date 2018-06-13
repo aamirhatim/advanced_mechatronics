@@ -62,6 +62,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system/common/sys_common.h"
 #include "app.h"
 #include "system_definitions.h"
+#include "motor_control.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -76,7 +77,24 @@ void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 }
 
 void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
-  // code for PI control goes here
+    // code for PI control goes here
+    
+    // Read current encoder values
+    static int enc1 = read_encoder1();
+    static int enc2 = read_encoder2();
+    
+    // Calculate speed (in encoder counts per second)
+    static int vel1 = (enc1 - prev1)*50;
+    static int vel2 = (enc2 - prev2)*50;
+    
+    // Compute control effort
+    static int effort1 = pi_control(vel1_ref, vel1, eint1);
+    static int effort2 = pi_control(vel2_ref, vel2, eint2);
+    
+    // Set PWM
+    OC1RS = (unsigned int) PR2*effort1;
+    OC4RS = (unsigned int) PR2*effort2;
+    
 
   IFS0bits.T4IF = 0; // clear interrupt flag, last line
 }
