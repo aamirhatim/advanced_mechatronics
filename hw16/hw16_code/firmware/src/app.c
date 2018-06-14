@@ -73,7 +73,7 @@ int startTime = 0; // to remember the loop time
 char rx[64]; // the raw data
 int rxPos = 0; // how much data has been stored
 int gotRx = 0; // the flag
-int rxVal = 0; // a place to store the int that was received
+//int rxVal = 0; // a place to store the int that was received
 
 // *****************************************************************************
 /* Application Data
@@ -355,6 +355,7 @@ void APP_Initialize(void) {
     init_motors();
     init_encoders();
     init_controller();
+    reset_encoders();
 
     startTime = _CP0_GET_COUNT();
 }
@@ -449,7 +450,7 @@ void APP_Tasks(void) {
              * The isReadComplete flag gets updated in the CDC event handler. */
 
              /* WAIT FOR 5HZ TO PASS OR UNTIL A LETTER IS RECEIVED */
-            if (gotRx || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
+            if (gotRx || _CP0_GET_COUNT() - startTime > (48000000 / 50 / 4)) {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
                 LED = !LED;
             }
@@ -483,7 +484,7 @@ void APP_Tasks(void) {
                 rxPos = 0;
                 gotRx = 0;
             } else {
-                len = sprintf(dataOut, "%d\r\n", i);
+                len = sprintf(dataOut, "%d\r\n", rxVal);
                 i++;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,

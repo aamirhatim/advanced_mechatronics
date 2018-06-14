@@ -77,26 +77,25 @@ void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 }
 
 void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
-    // code for PI control goes here
+    int enc[2];
+    float effort[2];
     
     // Read current encoder values
-    static int enc1 = read_encoder1();
-    static int enc2 = read_encoder2();
+    enc[0] = read_encoder1();
+    enc[1] = read_encoder2();
     
-    // Calculate speed (in encoder counts per second)
-    static int vel1 = (enc1 - prev1)*50;
-    static int vel2 = (enc2 - prev2)*50;
+    // Reset encoders for next cycle
+    reset_encoders();
     
     // Compute control effort
-    static int effort1 = pi_control(vel1_ref, vel1, eint1);
-    static int effort2 = pi_control(vel2_ref, vel2, eint2);
+    effort[0] = pi_control(enc_ref[0], enc[0], 1);
+    effort[1] = pi_control(enc_ref[1], enc[1], 2);
     
     // Set PWM
-    OC1RS = (unsigned int) PR2*effort1;
-    OC4RS = (unsigned int) PR2*effort2;
+    OC1RS = (int) (PR2*effort[0]);
+    OC4RS = (int) (PR2*effort[1]);
     
-
-  IFS0bits.T4IF = 0; // clear interrupt flag, last line
+    IFS0bits.T4IF = 0; // clear interrupt flag, last line
 }
 
 /*******************************************************************************

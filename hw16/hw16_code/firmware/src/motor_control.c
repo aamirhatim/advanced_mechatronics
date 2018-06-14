@@ -1,5 +1,6 @@
 #include "motor_control.h"
 #include <xc.h>
+#include "app.h"
 
 void init_motors() {
     RPA0Rbits.RPA0R = 0b0101;   // A0 to OC1 (motor 1)
@@ -60,6 +61,28 @@ int read_encoder2() {
     return TMR3;
 }
 
-float pi_control(int reference, int actual, int eint) {
-    return 0.0;
+void reset_encoders() {
+    TMR5 = 0;
+    TMR3 = 0;
+}
+
+float pi_control(int reference, int actual, int motor_num) {
+    int err;
+    float u;
+    
+    err = reference - actual;
+    if (ki*(eint[motor_num-1] + err) <= 1.0) {
+        eint[motor_num-1] += err;
+    }
+    
+    u = (float) (kp*err + ki*eint[motor_num-1]);
+    
+    if (u > 100.0) {
+        u = 100.0;
+    }
+    else if (u < 0.0) {
+        u = 0.0;
+    }
+        
+    return u/100.0;
 }

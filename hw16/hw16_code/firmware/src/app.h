@@ -214,7 +214,7 @@ typedef struct
   Remarks:
     This routine must be called from the SYS_Initialize function.
 */
-
+int rxVal = 0;
 void APP_Initialize ( void );
 
 
