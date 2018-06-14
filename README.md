@@ -19,5 +19,5 @@ This repo contains all mini-projects completed in ME 433: Advanced Mechatronics 
 ### [HW 13](hw13): Accessing the Android Camera
 ### [HW 14](hw14): Android - PIC Communication
 ### [HW 15](hw15): CAD 3D Printing, and Laser Cutting
-### HW 16: PI Motor Control (coming soon)
+### [HW 16](hw16): PI Motor Control
 ### [HW 17](hw17): Path Detection
