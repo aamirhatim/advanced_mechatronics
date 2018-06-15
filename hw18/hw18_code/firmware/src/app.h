@@ -58,6 +58,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdlib.h>
 #include "system_config.h"
 #include "system_definitions.h"
+#include "motor_control.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -214,7 +215,9 @@ typedef struct
   Remarks:
     This routine must be called from the SYS_Initialize function.
 */
+
 int rxVal = 0;
+static volatile int motor_speeds[2] = {0, 0};
 void APP_Initialize ( void );
 
 
@@ -247,9 +250,7 @@ void APP_Initialize ( void );
   Remarks:
     This routine must be called from SYS_Tasks() routine.
  */
-
 void APP_Tasks( void );
-
 
 #endif /* _APP_H */
 

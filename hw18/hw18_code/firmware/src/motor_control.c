@@ -2,6 +2,8 @@
 #include <xc.h>
 #include "app.h"
 
+#define MAX_SPEED 50
+
 void init_motors() {
     RPA0Rbits.RPA0R = 0b0101;   // A0 to OC1 (motor 1)
     RPB13Rbits.RPB13R = 0b0101; // B13 to OC4 (motor 2)

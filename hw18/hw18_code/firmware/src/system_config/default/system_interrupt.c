@@ -64,6 +64,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_definitions.h"
 #include "motor_control.h"
 
+#define MIDDLE 320              // Middle of the phone screen
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: System Interrupt Vector Functions
@@ -83,13 +85,25 @@ void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
     // Read current encoder values
     enc[0] = read_encoder1();
     enc[1] = read_encoder2();
+    motor_speeds[0] = enc[0];
+    motor_speeds[1] = enc[1];
     
     // Reset encoders for next cycle
     reset_encoders();
     
+    // Adjust for turning
+    int turn = rxVal - 320;
+    int left = enc_ref, right = enc_ref;
+    if (turn < -5) {
+        left = enc_ref - 10;
+    }
+    else if (turn > 5) {
+        right = enc_ref - 10;
+    }
+    
     // Compute control effort
-    effort[0] = pi_control(enc_ref[0], enc[0], 1);
-    effort[1] = pi_control(enc_ref[1], enc[1], 2);
+    effort[0] = pi_control(left, enc[0], 1);
+    effort[1] = pi_control(right, enc[1], 2);
     
     // Set PWM
     OC1RS = (int) (PR2*effort[0]);
