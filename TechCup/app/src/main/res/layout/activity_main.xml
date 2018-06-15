@@ -64,20 +64,20 @@
             android:layout_width="640px"
             android:layout_height="480px" />
 
-        <ScrollView
-            android:id="@+id/dataStream"
-            android:layout_width="wrap_content"
-            android:layout_height="250dip">
+        <!--<ScrollView-->
+            <!--android:id="@+id/dataStream"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="250dip">-->
 
-            <TextView
-                android:id="@+id/usbComm"
-                android:text="nothing from usb yet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_green_light"
-                />
+            <!--<TextView-->
+                <!--android:id="@+id/usbComm"-->
+                <!--android:text="nothing from usb yet"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@android:color/holo_green_light"-->
+                <!--/>-->
 
-        </ScrollView>
+        <!--</ScrollView>-->
 
         <TextureView
             android:id="@+id/textureview"

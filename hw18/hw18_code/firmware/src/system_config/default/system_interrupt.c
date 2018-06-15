@@ -63,6 +63,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include "system_definitions.h"
 #include "motor_control.h"
+#include <math.h>
 
 #define MIDDLE 320              // Middle of the phone screen
 
@@ -92,13 +93,17 @@ void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
     reset_encoders();
     
     // Adjust for turning
-    int turn = rxVal - 320;
+    int offset = rxVal - 320;
     int left = enc_ref, right = enc_ref;
-    if (turn < -5) {
-        left = enc_ref - 10;
+    int turn;
+    
+    if (offset < -5) {
+        turn = turn_control(abs(offset));
+        left = enc_ref - turn;
     }
-    else if (turn > 5) {
-        right = enc_ref - 10;
+    else if (offset > 5) {
+        turn = turn_control(abs(offset));
+        right = enc_ref - turn;
     }
     
     // Compute control effort

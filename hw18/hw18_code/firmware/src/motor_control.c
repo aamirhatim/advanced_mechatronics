@@ -1,8 +1,7 @@
 #include "motor_control.h"
 #include <xc.h>
 #include "app.h"
-
-#define MAX_SPEED 50
+#include <math.h>
 
 void init_motors() {
     RPA0Rbits.RPA0R = 0b0101;   // A0 to OC1 (motor 1)
@@ -87,4 +86,14 @@ float pi_control(int reference, int actual, int motor_num) {
     }
         
     return u/100.0;
+}
+
+int turn_control(int s) {
+    int b = -5;
+    float c = -1.0/35.0;
+    float g = exp(b*exp(c*s));
+    
+    int turn_speed = 2*g*MAX_SPEED/3;
+    
+    return turn_speed;
 }

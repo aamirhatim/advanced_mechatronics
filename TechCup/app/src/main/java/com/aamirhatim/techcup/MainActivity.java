@@ -76,11 +76,11 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         sens_txt = (TextView) findViewById(R.id.sens_val);
         thresh_adj = (SeekBar) findViewById(R.id.seek1);
         sensitivity_adj = (SeekBar) findViewById(R.id.seek2);
-        pic_data = (TextView) findViewById(R.id.usbComm);
-        data_stream = (ScrollView) findViewById(R.id.dataStream);
+//        pic_data = (TextView) findViewById(R.id.usbComm);
+//        data_stream = (ScrollView) findViewById(R.id.dataStream);
 
         // see if the app has permission to use the camera
-        //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         if (c != null) {
             readSlider(); // Read threshold and sensitivity sliders
-            int line_height = 400;
+            int line_height = 250;
             int step = 6;
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, line_height, bmp.getWidth(), 1);
@@ -219,8 +219,18 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     private int get_left_edge(int step, int[] pixels) {
         int edge = 0;
-        for (int i = 0; i < (3*bmp.getWidth()/5)-step; i++) {
-            if (green(pixels[i]) < thresh && green(pixels[i+step]) > thresh && green(pixels[i+step]) - green(pixels[i]) > sensitivity) {
+//        for (int i = 0; i < (4*bmp.getWidth()/5)-step; i++) {
+//            if (green(pixels[i]) < thresh && green(pixels[i+step]) > thresh && green(pixels[i+step]) - green(pixels[i]) > sensitivity) {
+//                edge = i+(step/2);
+//                return edge;    // Stop searching when an edge is found
+//            }
+//        }
+
+        int avg, avg_step;
+        for (int i = 0; i < (4*bmp.getWidth()/5)-step; i++) {
+            avg = (red(pixels[i])+green(pixels[i])+blue(pixels[i]))/3;
+            avg_step = (red(pixels[i+step])+green(pixels[i+step])+blue(pixels[i+step]))/3;
+            if (avg > thresh && avg_step < thresh) {
                 edge = i+(step/2);
                 return edge;    // Stop searching when an edge is found
             }
@@ -230,8 +240,18 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     private int get_right_edge(int step, int[] pixels) {
         int edge = bmp.getWidth();
-        for (int i = 2*bmp.getWidth()/5; i < bmp.getWidth()-step; i++) {
-            if (blue(pixels[i]) > thresh && blue(pixels[i+step]) < thresh && blue(pixels[i]) - blue(pixels[i+step]) > sensitivity) {
+//        for (int i = bmp.getWidth()/5; i < bmp.getWidth()-step; i++) {
+//            if (blue(pixels[i]) > thresh && blue(pixels[i+step]) < thresh && blue(pixels[i]) - blue(pixels[i+step]) > sensitivity) {
+//                edge = i+(step/2);
+//                return edge;    // Stop searching when an edge is found
+//            }
+//        }
+
+        int avg, avg_step;
+        for (int i = bmp.getWidth()/5; i < bmp.getWidth()-step; i++) {
+            avg = (red(pixels[i])+green(pixels[i])+blue(pixels[i]))/3;
+            avg_step = (red(pixels[i+step])+green(pixels[i+step])+blue(pixels[i+step]))/3;
+            if (avg < thresh && avg_step > thresh) {
                 edge = i+(step/2);
                 return edge;    // Stop searching when an edge is found
             }
@@ -337,15 +357,16 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     private void updateReceivedData(byte[] data) {
         //do something with received data
+        return;
 
         //for displaying:
-        String rxString = null;
-        try {
-            rxString = new String(data, "UTF-8"); // put the data you got into a string
-            pic_data.append(rxString);
-            data_stream.fullScroll(View.FOCUS_DOWN);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        String rxString = null;
+//        try {
+//            rxString = new String(data, "UTF-8"); // put the data you got into a string
+//            pic_data.append(rxString);
+//            data_stream.fullScroll(View.FOCUS_DOWN);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
     }
 }
